@@ -60,69 +60,84 @@ const Particles = () => {
             void main() {
                 vUv = uv;
                 
-                // --- 1. JELLYFISH BREATHING (ORGANIC & 3D) ---
+                // --- 1. ALIVE FLOW (Base layer) ---
                 vec3 pos = aOffset;
+                
+                // "Grid breaking" flow: Particles shouldn't stand still.
+                // We apply a slow, continuous drift based on noise/sine fields.
+                // This makes the whole field feel like a fluid medium (water/air).
+                float driftSpeed = uTime * 0.15;
+                
+                // Curl-like flowing motion
+                float dx = sin(driftSpeed + pos.y * 0.5) + sin(driftSpeed * 0.5 + pos.y * 2.0);
+                float dy = cos(driftSpeed + pos.x * 0.5) + cos(driftSpeed * 0.5 + pos.x * 2.0);
+                
+                // subtle constant movement
+                pos.x += dx * 0.15; 
+                pos.y += dy * 0.15;
+
+                // --- 2. THE JELLYFISH HALO (Smooth & Subtle) ---
                 
                 vec2 relToMouse = pos.xy - uMouse;
                 float distFromMouse = length(relToMouse);
                 float angleToMouse = atan(relToMouse.y, relToMouse.x);
                 
-                // Add noise to the distance field to break the perfect circle
-                // Reduced noise amplitude so the "Loop" is still recognizable
-                float waveNoise = noise(vec2(angleToMouse * 2.5, uTime * 0.4));
-                float organicDist = distFromMouse + (waveNoise * 0.8); 
+                // Organic Halo Shape
+                // Very slow evolution of the noise (uTime * 0.1) to avoid "jumpy"
+                float shapeFactor = noise(vec2(angleToMouse * 2.0, uTime * 0.1));
                 
-                // Radial Wave
-                float breathSpeed = 1.4;
-                float breathFreq = 0.6;
-                float breathPhase = uTime * breathSpeed - organicDist * breathFreq;
+                // The "Breathing" is now a slow expansion/contraction of the Halo Radius
+                // nice and easy...
+                float breathCycle = sin(uTime * 0.8); // Smooth -1 to 1
                 
-                float breathWave = sin(breathPhase);
+                // Radius breathes: 2.2 +/- 0.3
+                float currentRadius = 2.2 + breathCycle * 0.3 + (shapeFactor * 0.5);
                 
-                // 3D EFFECT: Z-displacement
-                // User said "Effect is waaaay too big". Toning down Z-pop.
-                float zAmp = 0.5; 
-                pos.z += breathWave * zAmp;
+                // Interaction Ring Calculation
+                float dist = distFromMouse; 
+                float rimWidth = 1.8; // Soft edge
+                float rimInfluence = smoothstep(rimWidth, 0.0, abs(dist - currentRadius));
                 
-                // XY Displacement
-                vec2 radialDir = normalize(relToMouse + vec2(0.0001, 0.0));
-                float movementAmp = 0.2 + (waveNoise * 0.1); 
-                pos.xy += radialDir * breathWave * movementAmp;
+                // --- 3. WAVE MOVEMENT (Gentle Ripple) ---
+                // Instead of a fast travel wave, we just gently push particles out
+                // when the Halo expands.
+                
+                vec2 pushDir = normalize(relToMouse + vec2(0.0001, 0.0));
+                
+                // Align push with the breath cycle
+                // When breath is expanding (breathCycle > 0), push out slightly
+                float pushAmt = (breathCycle * 0.5 + 0.5) * 0.2; // 0 to 0.2
+                
+                // Apply push mostly near the ring
+                pos.xy += pushDir * pushAmt * rimInfluence;
+                
+                // 3D: Subtle Z float
+                pos.z += rimInfluence * 0.3 * sin(uTime);
 
-                // --- 2. MOUSE INTERACTION (RIM & CENTER) ---
+                // --- 4. SIZE & SCALE ---
                 
-                float edgeNoise = noise(vec2(angleToMouse * 6.0, uTime * 0.8)) * 0.5;
-                float dist = organicDist + edgeNoise;
+                // Base size fluctuates slightly with flow
+                float baseSize = 0.012 + (sin(uTime + pos.x)*0.003);
                 
-                // User: "Reduce smaller radius" / "Too dispersed"
-                float rimRadius = 2.2; 
-                float rimWidth = 1.6; 
-                float rimDist = abs(dist - rimRadius);
-                float influence = 1.0 - smoothstep(0.0, rimWidth, rimDist);
+                // Grow on ring
+                // Smooth transition
+                float activeSize = 0.055; 
+                float currentScale = baseSize + (rimInfluence * activeSize);
                 
-                // --- 3. SIZE & SCALE ---
-                
-                float waveScale = smoothstep(-1.0, 1.0, breathWave); // 0..1
-                float pulsingBase = 0.01 + waveScale * 0.012; 
-                
-                // Sizing tweaks
-                float activeBoost = 0.05; 
-                float centerFactor = smoothstep(rimRadius, 0.0, dist); 
-                float centerBoost = centerFactor * 0.015; 
-                
-                float currentScale = pulsingBase + (influence * activeBoost) + centerBoost;
-                
-                // Stretch logic
-                float stretch = influence * 0.05; 
+                // Stretch (Minimal)
+                float stretch = rimInfluence * 0.02;
                 
                 vec3 transformed = position;
                 transformed.x *= (currentScale + stretch);
-                transformed.y *= currentScale * 0.9; 
+                transformed.y *= currentScale * 0.85; 
                 
-                vSize = influence;
+                vSize = rimInfluence;
                 vPos = pos.xy;
                 
-                // --- 4. ROTATION ---
+                // --- 5. ROTATION ---
+                
+                // --- 5. ROTATION ---
+
                 // User: "Must be directed towards mouse" (Radial)
                 
                 // atan(y, x) gives angle of vector FROM mouse TO particle.
