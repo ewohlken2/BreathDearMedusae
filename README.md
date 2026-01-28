@@ -1,16 +1,35 @@
-# React + Vite
+# 🌊 BreathDearMedusa
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An organic, sensual background particle engine inspired by the fluid movement of a breathing medusa. This project uses high-performance instanced rendering and custom GLSL shaders to create a weighted, reactive experience that feels alive.
 
-Currently, two official plugins are available:
+## 🛠️ Built With
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project leverages modern web technologies to achieve high-performance 3D graphics:
 
-## React Compiler
+- **[React 19](https://react.dev/)** - For component-based UI and state management.
+- **[Vite](https://vitejs.dev/)** - Next-generation frontend tooling for a lightning-fast development experience.
+- **[Three.js](https://threejs.org/)** - The industry-standard 3D library for WebGL.
+- **[React Three Fiber](https://r3f.docs.pmnd.rs/)** - A powerful React renderer for Three.js.
+- **GLSL Shaders** - Custom vertex and fragment shaders for organic particle movement and shifting gradients.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Getting Started
 
-## Expanding the ESLint configuration
+To run the project locally, follow these steps:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+3. **Build for production:**
+   ```bash
+   npm run build
+   ```
+
+---
+*Inspired by the Antigravity experience.*
