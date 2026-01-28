@@ -153,40 +153,40 @@ const Particles = () => {
             }
         `,
         fragmentShader: `
+            uniform float uTime;
             varying vec2 vUv;
             varying float vSize;
             varying vec2 vPos;
 
             void main() {
-                // Shape: "Rectangle with radius" (Squarcle / Superellipse)
-                // A simple circle stretches into an oval. 
-                // A superellipse stretches into a rounded box/pill look.
+                // Shape: "Rectangle with radius"
                 vec2 center = vec2(0.5);
-                vec2 pos = abs(vUv - center) * 2.0; // -1..1 range approx normalized
+                vec2 pos = abs(vUv - center) * 2.0; 
                 
-                // Power 4.0 creates a "Squarcle"
-                float d = pow(pow(pos.x, 4.0) + pow(pos.y, 4.0), 1.0/4.0);
-                
-                // Edge at 1.0 (normalized) which corresponds to 0.5 in UV space
-                // We use 0.0 -> 1.0 gradient in the math above
-                // So smoothstep around 0.8 to keeping it contained
+                float d = pow(pow(pos.x, 2.6) + pow(pos.y, 2.6), 1.0/2.6);
                 float alpha = 1.0 - smoothstep(0.8, 1.0, d);
                 
                 if (alpha < 0.01) discard;
 
-                // Colors
+                // Google Brand Colors
                 vec3 black = vec3(0.08, 0.08, 0.1);
-                
                 vec3 cBlue = vec3(0.26, 0.52, 0.96);
                 vec3 cRed = vec3(0.92, 0.26, 0.21);
                 vec3 cYellow = vec3(0.98, 0.73, 0.01);
                 
-                float p = sin(vPos.x * 0.5 + vPos.y * 0.5);
-                vec3 activeColor = cBlue;
-                if (p > 0.5) activeColor = cRed;
-                else if (p < -0.5) activeColor = cYellow;
+                // --- Dynamic Color Shifting ---
+                float t = uTime * 1.2; // FASTER color transition
                 
-                vec3 finalColor = mix(black, activeColor, smoothstep(0.2, 1.0, vSize));
+                // Higher frequency (0.8) = smaller, more numerous color zones
+                float p1 = sin(vPos.x * 0.8 + t);
+                float p2 = sin(vPos.y * 0.8 + t * 0.8 + p1);
+                
+                // Mixed zones
+                vec3 activeColor = mix(cBlue, cRed, p1 * 0.5 + 0.5);
+                activeColor = mix(activeColor, cYellow, p2 * 0.5 + 0.5);
+                
+                // Mix with black for idle state
+                vec3 finalColor = mix(black, activeColor, smoothstep(0.1, 0.8, vSize));
                 float finalAlpha = alpha * mix(0.4, 0.95, vSize);
 
                 gl_FragColor = vec4(finalColor, finalAlpha);
@@ -273,8 +273,8 @@ const Particles = () => {
         // Current: Center of Gravity
         const current = material.uniforms.uMouse.value;
 
-        // "Heavy" Drag: 
-        const dragFactor = 0.025;
+        // "Heavy" Drag: Reduced to 0.015 for more weight
+        const dragFactor = 0.015;
 
         current.x += (targetX - current.x) * dragFactor;
         current.y += (targetY - current.y) * dragFactor;
