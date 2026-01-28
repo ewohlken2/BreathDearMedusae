@@ -240,18 +240,44 @@ const Particles = () => {
 
     }, [count, countX, countY]);
 
+    // Track if mouse is on screen
+    const hovering = useRef(true);
+
+    useEffect(() => {
+        const handleLeave = () => (hovering.current = false);
+        const handleEnter = () => (hovering.current = true);
+
+        document.body.addEventListener("mouseleave", handleLeave);
+        document.body.addEventListener("mouseenter", handleEnter);
+
+        return () => {
+            document.body.removeEventListener("mouseleave", handleLeave);
+            document.body.removeEventListener("mouseenter", handleEnter);
+        };
+    }, []);
+
     useFrame((state) => {
         const { clock, pointer } = state;
         material.uniforms.uTime.value = clock.getElapsedTime();
 
-        // World space mouse
-        const x = (pointer.x * viewport.width) / 2;
-        const y = (pointer.y * viewport.height) / 2;
+        // Determine Target
+        let targetX = 0;
+        let targetY = 0;
 
-        // Smooth mouse
+        // Only follow pointer if mouse is on screen
+        if (hovering.current) {
+            targetX = (pointer.x * viewport.width) / 2;
+            targetY = (pointer.y * viewport.height) / 2;
+        }
+
+        // Current: Center of Gravity
         const current = material.uniforms.uMouse.value;
-        current.x += (x - current.x) * 0.1;
-        current.y += (y - current.y) * 0.1;
+
+        // "Heavy" Drag: 
+        const dragFactor = 0.025;
+
+        current.x += (targetX - current.x) * dragFactor;
+        current.y += (targetY - current.y) * dragFactor;
     });
 
     return (
