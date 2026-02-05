@@ -261,7 +261,6 @@ const Particles = ({ config }) => {
 
     const offsets = new Float32Array(count * 3);
     const randoms = new Float32Array(count);
-    const angles = new Float32Array(count);
 
     const gridWidth = 40;
     const gridHeight = 22;
@@ -284,7 +283,6 @@ const Particles = ({ config }) => {
         offsets[i * 3 + 2] = 0;
 
         randoms[i] = Math.random();
-        angles[i] = Math.random() * Math.PI * 2;
         i++;
       }
     }
@@ -296,10 +294,6 @@ const Particles = ({ config }) => {
     meshRef.current.geometry.setAttribute(
       "aRandom",
       new THREE.InstancedBufferAttribute(randoms, 1),
-    );
-    meshRef.current.geometry.setAttribute(
-      "aAngleOffset",
-      new THREE.InstancedBufferAttribute(angles, 1),
     );
   }, [count, countX, countY]);
 
