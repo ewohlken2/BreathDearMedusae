@@ -1,12 +1,30 @@
 {
   "name": "@breathdear/medusae",
   "version": "0.1.0",
-  "private": true,
+  "description": "An organic, breathing medusa particle engine built with React Three Fiber.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ewohlken2/BreathDearMedusae.git",
+    "directory": "packages/medusae"
+  },
+  "homepage": "https://github.com/ewohlken2/BreathDearMedusae#readme",
+  "bugs": {
+    "url": "https://github.com/ewohlken2/BreathDearMedusae/issues"
+  },
+  "keywords": [
+    "react",
+    "three",
+    "react-three-fiber",
+    "r3f",
+    "particles",
+    "shader",
+    "medusa"
+  ],
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "src/index.d.ts",
-  "style": "dist/style.css",
+  "style": "dist/index.css",
   "files": [
     "dist",
     "src/index.d.ts",
@@ -18,7 +36,7 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./style.css": "./dist/style.css"
+    "./style.css": "./dist/index.css"
   },
   "peerDependencies": {
     "react": "^18 || ^19",
