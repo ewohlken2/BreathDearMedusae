@@ -27,6 +27,10 @@ const MEDUSAE_DEFAULTS = {
     rotationJitter: 0.3,
     cursorFollowStrength: 1,
     oscillationFactor: 1,
+    colorBase: "#141419",
+    colorBlue: "#4285f5",
+    colorRed: "#eb4236",
+    colorYellow: "#faba03",
   },
 };
 
