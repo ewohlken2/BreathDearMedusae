@@ -50,13 +50,28 @@ const Particles = ({
       uBlobScaleX: { value: blobScaleX },
       uBlobScaleY: { value: blobScaleY },
     }),
-    [],
+    [
+      outerOscFrequency,
+      outerOscAmplitude,
+      haloRadiusBase,
+      haloRadiusAmplitude,
+      haloShapeAmplitude,
+      haloRimWidth,
+      haloOuterStartOffset,
+      haloOuterEndOffset,
+      particleBaseSize,
+      particleActiveSize,
+      blobScaleX,
+      blobScaleY,
+    ],
   );
+
+  const materialRef = useRef(null);
 
   const material = useMemo(
     () =>
       new THREE.ShaderMaterial({
-        uniforms: uniforms,
+        uniforms,
         vertexShader: `
             uniform float uTime;
             uniform vec2 uMouse;
@@ -261,33 +276,8 @@ const Particles = ({
   );
 
   useEffect(() => {
-    material.uniforms.uOuterOscFrequency.value = outerOscFrequency;
-    material.uniforms.uOuterOscAmplitude.value = outerOscAmplitude;
-    material.uniforms.uHaloRadiusBase.value = haloRadiusBase;
-    material.uniforms.uHaloRadiusAmplitude.value = haloRadiusAmplitude;
-    material.uniforms.uHaloShapeAmplitude.value = haloShapeAmplitude;
-    material.uniforms.uHaloRimWidth.value = haloRimWidth;
-    material.uniforms.uHaloOuterStartOffset.value = haloOuterStartOffset;
-    material.uniforms.uHaloOuterEndOffset.value = haloOuterEndOffset;
-    material.uniforms.uParticleBaseSize.value = particleBaseSize;
-    material.uniforms.uParticleActiveSize.value = particleActiveSize;
-    material.uniforms.uBlobScaleX.value = blobScaleX;
-    material.uniforms.uBlobScaleY.value = blobScaleY;
-  }, [
-    material,
-    outerOscFrequency,
-    outerOscAmplitude,
-    haloRadiusBase,
-    haloRadiusAmplitude,
-    haloShapeAmplitude,
-    haloRimWidth,
-    haloOuterStartOffset,
-    haloOuterEndOffset,
-    particleBaseSize,
-    particleActiveSize,
-    blobScaleX,
-    blobScaleY,
-  ]);
+    materialRef.current = material;
+  }, [material]);
 
   useEffect(() => {
     if (!meshRef.current) return;
@@ -359,7 +349,9 @@ const Particles = ({
 
   useFrame((state) => {
     const { clock, pointer } = state;
-    material.uniforms.uTime.value = clock.getElapsedTime();
+    const currentMaterial = materialRef.current;
+    if (!currentMaterial) return;
+    currentMaterial.uniforms.uTime.value = clock.getElapsedTime();
 
     // Determine Target
     let targetX = null;
@@ -378,7 +370,7 @@ const Particles = ({
         }
 
     // Current: Center of Gravity
-    const current = material.uniforms.uMouse.value;
+    const current = currentMaterial.uniforms.uMouse.value;
 
     // "Heavy" Drag: Reduced to 0.015 for more weight
         const dragFactor = cursorDragFactor;
