@@ -14,18 +14,20 @@ This project leverages modern web technologies to achieve high-performance 3D gr
 
 ## 🔗 Preview
 
-`https://breath-dear-medusae.vercel.app/`
+[https://breath-dear-medusae.vercel.app/](https://breath-dear-medusae.vercel.app/)
 
 ## 🚀 Getting Started
 
 To run the project locally, follow these steps:
 
 1. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 2. **Run the development server:**
+
    ```bash
    npm run dev
    ```
@@ -36,4 +38,5 @@ To run the project locally, follow these steps:
    ```
 
 ---
-*Inspired by the Antigravity experience.*
+
+_Inspired by the Antigravity experience._
