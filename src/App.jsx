@@ -44,6 +44,14 @@ function App() {
             typeof storedHalo.outerOscAmplitude === "number"
               ? storedHalo.outerOscAmplitude
               : SETTINGS_CONFIG.defaults.halo.outerOscAmplitude,
+          outerOscJitterStrength:
+            typeof storedHalo.outerOscJitterStrength === "number"
+              ? storedHalo.outerOscJitterStrength
+              : SETTINGS_CONFIG.defaults.halo.outerOscJitterStrength,
+          outerOscJitterSpeed:
+            typeof storedHalo.outerOscJitterSpeed === "number"
+              ? storedHalo.outerOscJitterSpeed
+              : SETTINGS_CONFIG.defaults.halo.outerOscJitterSpeed,
           radiusBase:
             typeof storedHalo.radiusBase === "number"
               ? storedHalo.radiusBase
@@ -105,6 +113,12 @@ function App() {
   const [outerOscAmplitude, setOuterOscAmplitude] = useState(
     savedSettings.halo.outerOscAmplitude,
   );
+  const [outerOscJitterStrength, setOuterOscJitterStrength] = useState(
+    savedSettings.halo.outerOscJitterStrength,
+  );
+  const [outerOscJitterSpeed, setOuterOscJitterSpeed] = useState(
+    savedSettings.halo.outerOscJitterSpeed,
+  );
   const [haloRadiusBase, setHaloRadiusBase] = useState(savedSettings.halo.radiusBase);
   const [haloRadiusAmplitude, setHaloRadiusAmplitude] = useState(savedSettings.halo.radiusAmplitude);
   const [haloShapeAmplitude, setHaloShapeAmplitude] = useState(savedSettings.halo.shapeAmplitude);
@@ -131,6 +145,8 @@ function App() {
         halo: {
           outerOscFrequency,
           outerOscAmplitude,
+          outerOscJitterStrength,
+          outerOscJitterSpeed,
           radiusBase: haloRadiusBase,
           radiusAmplitude: haloRadiusAmplitude,
           shapeAmplitude: haloShapeAmplitude,
@@ -155,6 +171,8 @@ function App() {
       halo: {
         outerOscFrequency,
         outerOscAmplitude,
+        outerOscJitterStrength,
+        outerOscJitterSpeed,
         radiusBase: haloRadiusBase,
         radiusAmplitude: haloRadiusAmplitude,
         shapeAmplitude: haloShapeAmplitude,
@@ -177,6 +195,8 @@ function App() {
     setCursorDragFactor(SETTINGS_CONFIG.defaults.cursor.dragFactor);
     setOuterOscFrequency(SETTINGS_CONFIG.defaults.halo.outerOscFrequency);
     setOuterOscAmplitude(SETTINGS_CONFIG.defaults.halo.outerOscAmplitude);
+    setOuterOscJitterStrength(SETTINGS_CONFIG.defaults.halo.outerOscJitterStrength);
+    setOuterOscJitterSpeed(SETTINGS_CONFIG.defaults.halo.outerOscJitterSpeed);
     setHaloRadiusBase(SETTINGS_CONFIG.defaults.halo.radiusBase);
     setHaloRadiusAmplitude(SETTINGS_CONFIG.defaults.halo.radiusAmplitude);
     setHaloShapeAmplitude(SETTINGS_CONFIG.defaults.halo.shapeAmplitude);
@@ -199,6 +219,8 @@ function App() {
       halo: {
         outerOscFrequency,
         outerOscAmplitude,
+        outerOscJitterStrength,
+        outerOscJitterSpeed,
         radiusBase: haloRadiusBase,
         radiusAmplitude: haloRadiusAmplitude,
         shapeAmplitude: haloShapeAmplitude,
@@ -223,6 +245,8 @@ function App() {
   halo: {
     outerOscFrequency: ${payload.halo.outerOscFrequency},
     outerOscAmplitude: ${payload.halo.outerOscAmplitude},
+    outerOscJitterStrength: ${payload.halo.outerOscJitterStrength},
+    outerOscJitterSpeed: ${payload.halo.outerOscJitterSpeed},
     radiusBase: ${payload.halo.radiusBase},
     radiusAmplitude: ${payload.halo.radiusAmplitude},
     shapeAmplitude: ${payload.halo.shapeAmplitude},
@@ -254,6 +278,8 @@ function App() {
     cursorDragFactor !== savedSettings.cursor.dragFactor ||
     outerOscFrequency !== savedSettings.halo.outerOscFrequency ||
     outerOscAmplitude !== savedSettings.halo.outerOscAmplitude ||
+    outerOscJitterStrength !== savedSettings.halo.outerOscJitterStrength ||
+    outerOscJitterSpeed !== savedSettings.halo.outerOscJitterSpeed ||
     haloRadiusBase !== savedSettings.halo.radiusBase ||
     haloRadiusAmplitude !== savedSettings.halo.radiusAmplitude ||
     haloShapeAmplitude !== savedSettings.halo.shapeAmplitude ||
