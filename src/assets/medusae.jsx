@@ -2,7 +2,23 @@ import { useRef, useMemo, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
-const Particles = ({ cursorJitterRadius = 0.03, cursorJitterStrength = 1 }) => {
+const Particles = ({
+  cursorJitterRadius = 0.03,
+  cursorJitterStrength = 1,
+  cursorDragFactor = 0.055,
+  outerOscFrequency = 2.6,
+  outerOscAmplitude = 0.56,
+  haloRadiusBase = 2.2,
+  haloRadiusAmplitude = 0.3,
+  haloShapeAmplitude = 0.5,
+  haloRimWidth = 1.8,
+  haloOuterStartOffset = 0.2,
+  haloOuterEndOffset = 2.2,
+  particleBaseSize = 0.012,
+  particleActiveSize = 0.055,
+  blobScaleX = 1.0,
+  blobScaleY = 0.85,
+}) => {
   const meshRef = useRef();
   const { viewport } = useThree();
 
@@ -21,6 +37,18 @@ const Particles = ({ cursorJitterRadius = 0.03, cursorJitterStrength = 1 }) => {
       uResolution: {
         value: new THREE.Vector2(window.innerWidth, window.innerHeight),
       },
+      uOuterOscFrequency: { value: outerOscFrequency },
+      uOuterOscAmplitude: { value: outerOscAmplitude },
+      uHaloRadiusBase: { value: haloRadiusBase },
+      uHaloRadiusAmplitude: { value: haloRadiusAmplitude },
+      uHaloShapeAmplitude: { value: haloShapeAmplitude },
+      uHaloRimWidth: { value: haloRimWidth },
+      uHaloOuterStartOffset: { value: haloOuterStartOffset },
+      uHaloOuterEndOffset: { value: haloOuterEndOffset },
+      uParticleBaseSize: { value: particleBaseSize },
+      uParticleActiveSize: { value: particleActiveSize },
+      uBlobScaleX: { value: blobScaleX },
+      uBlobScaleY: { value: blobScaleY },
     }),
     [],
   );
@@ -32,6 +60,18 @@ const Particles = ({ cursorJitterRadius = 0.03, cursorJitterStrength = 1 }) => {
         vertexShader: `
             uniform float uTime;
             uniform vec2 uMouse;
+            uniform float uOuterOscFrequency;
+            uniform float uOuterOscAmplitude;
+            uniform float uHaloRadiusBase;
+            uniform float uHaloRadiusAmplitude;
+            uniform float uHaloShapeAmplitude;
+            uniform float uHaloRimWidth;
+            uniform float uHaloOuterStartOffset;
+            uniform float uHaloOuterEndOffset;
+            uniform float uParticleBaseSize;
+            uniform float uParticleActiveSize;
+            uniform float uBlobScaleX;
+            uniform float uBlobScaleY;
             varying vec2 vUv;
             varying float vSize;
             varying vec2 vPos;
@@ -95,14 +135,12 @@ const Particles = ({ cursorJitterRadius = 0.03, cursorJitterStrength = 1 }) => {
                 float shapeFactor = noise(dirToMouse * 2.0 + vec2(0.0, uTime * 0.1));
                 
                 // Tunables
-                float radiusBase = 2.2;
-                float radiusAmplitude = 0.3;
-                float shapeAmplitude = 0.5;
-                float rimWidth = 1.8;
-                float outerStartOffset = 0.2;
-                float outerEndOffset = 2.2;
-                float outerOscFrequency = 1.0;
-                float outerOscAmplitude = 0.56;
+                float radiusBase = uHaloRadiusBase;
+                float radiusAmplitude = uHaloRadiusAmplitude;
+                float shapeAmplitude = uHaloShapeAmplitude;
+                float rimWidth = uHaloRimWidth;
+                float outerStartOffset = uHaloOuterStartOffset;
+                float outerEndOffset = uHaloOuterEndOffset;
 
                 // The "Breathing" is now a slow expansion/contraction of the Halo Radius
                 // nice and easy...
@@ -135,25 +173,25 @@ const Particles = ({ cursorJitterRadius = 0.03, cursorJitterStrength = 1 }) => {
                 // --- 3.5 OUTER OSCILLATION (Smooth, Faster) ---
                 // Faster motion outside the halo, but eased in smoothly.
                 float outerInfluence = smoothstep(baseRadius + outerStartOffset, baseRadius + outerEndOffset, dist);
-                float outerOsc = sin(uTime * outerOscFrequency + pos.x * 0.6 + pos.y * 0.6);
-                pos.xy += normalize(relToMouse + vec2(0.0001, 0.0)) * outerOsc * outerOscAmplitude * outerInfluence;
+                float outerOsc = sin(uTime * uOuterOscFrequency + pos.x * 0.6 + pos.y * 0.6);
+                pos.xy += normalize(relToMouse + vec2(0.0001, 0.0)) * outerOsc * uOuterOscAmplitude * outerInfluence;
 
                 // --- 4. SIZE & SCALE ---
                 
                 // Base size fluctuates slightly with flow
-                float baseSize = 0.012 + (sin(uTime + pos.x)*0.003);
+                float baseSize = uParticleBaseSize + (sin(uTime + pos.x)*0.003);
                 
                 // Grow on ring
                 // Smooth transition
-                float activeSize = 0.055; 
+                float activeSize = uParticleActiveSize; 
                 float currentScale = baseSize + (rimInfluence * activeSize);
                 
                 // Stretch (Minimal)
                 float stretch = rimInfluence * 0.02;
                 
                 vec3 transformed = position;
-                transformed.x *= (currentScale + stretch);
-                transformed.y *= currentScale * 0.85; 
+                transformed.x *= (currentScale + stretch) * uBlobScaleX;
+                transformed.y *= currentScale * uBlobScaleY; 
                 
                 vSize = rimInfluence;
                 vPos = pos.xy;
@@ -221,6 +259,35 @@ const Particles = ({ cursorJitterRadius = 0.03, cursorJitterStrength = 1 }) => {
       }),
     [uniforms],
   );
+
+  useEffect(() => {
+    material.uniforms.uOuterOscFrequency.value = outerOscFrequency;
+    material.uniforms.uOuterOscAmplitude.value = outerOscAmplitude;
+    material.uniforms.uHaloRadiusBase.value = haloRadiusBase;
+    material.uniforms.uHaloRadiusAmplitude.value = haloRadiusAmplitude;
+    material.uniforms.uHaloShapeAmplitude.value = haloShapeAmplitude;
+    material.uniforms.uHaloRimWidth.value = haloRimWidth;
+    material.uniforms.uHaloOuterStartOffset.value = haloOuterStartOffset;
+    material.uniforms.uHaloOuterEndOffset.value = haloOuterEndOffset;
+    material.uniforms.uParticleBaseSize.value = particleBaseSize;
+    material.uniforms.uParticleActiveSize.value = particleActiveSize;
+    material.uniforms.uBlobScaleX.value = blobScaleX;
+    material.uniforms.uBlobScaleY.value = blobScaleY;
+  }, [
+    material,
+    outerOscFrequency,
+    outerOscAmplitude,
+    haloRadiusBase,
+    haloRadiusAmplitude,
+    haloShapeAmplitude,
+    haloRimWidth,
+    haloOuterStartOffset,
+    haloOuterEndOffset,
+    particleBaseSize,
+    particleActiveSize,
+    blobScaleX,
+    blobScaleY,
+  ]);
 
   useEffect(() => {
     if (!meshRef.current) return;
@@ -314,7 +381,7 @@ const Particles = ({ cursorJitterRadius = 0.03, cursorJitterStrength = 1 }) => {
     const current = material.uniforms.uMouse.value;
 
     // "Heavy" Drag: Reduced to 0.015 for more weight
-    const dragFactor = 0.055;
+        const dragFactor = cursorDragFactor;
 
     // If it's the very first frame or mouse just entered, we might want to snap
     // but for now, initializing to 0,0 already makes it appear instantly at center.

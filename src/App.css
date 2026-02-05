@@ -64,15 +64,40 @@
   color: #1a1a1a;
 }
 
-.settings-row input[type="range"] {
-  grid-column: 1 / -1;
-  width: 100%;
-  accent-color: #2a2a2a;
+.settings-row input[type="number"] {
+  width: 110px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(20, 20, 20, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  color: #111111;
 }
 
 .settings-value {
   font-variant-numeric: tabular-nums;
   color: #555555;
+}
+
+.settings-accordion {
+  border: 1px solid rgba(20, 20, 20, 0.1);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  margin-bottom: 12px;
+}
+
+.settings-accordion summary {
+  cursor: pointer;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #5a5a5a;
+  margin-bottom: 10px;
+  list-style: none;
+}
+
+.settings-accordion summary::-webkit-details-marker {
+  display: none;
 }
 
 .settings-save {
@@ -98,4 +123,72 @@
 
 .settings-save:hover {
   transform: translateY(-1px);
+}
+
+.settings-reset {
+  margin-left: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(20, 20, 20, 0.12);
+  background: rgba(255, 255, 255, 0.8);
+  color: #111111;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.settings-reset:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+.settings-export {
+  margin-left: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(20, 20, 20, 0.12);
+  background: rgba(10, 10, 10, 0.08);
+  color: #111111;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.settings-export:hover {
+  background: rgba(10, 10, 10, 0.14);
+}
+
+.copy-notice {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(20, 20, 20, 0.9);
+  color: #ffffff;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  animation: fadeNotice 1.8s ease forwards;
+  z-index: 3;
+}
+
+@keyframes fadeNotice {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 }
