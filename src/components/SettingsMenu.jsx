@@ -1,52 +1,12 @@
 import { useState } from "react";
 
+const getValue = (source, path) =>
+  path.split(".").reduce((acc, key) => acc?.[key], source);
+
 const SettingsMenu = ({
-  radius,
-  strength,
-  dragFactor,
-  outerOscFrequency,
-  outerOscAmplitude,
-  outerOscJitterStrength,
-  outerOscJitterSpeed,
-  haloRadiusBase,
-  haloRadiusAmplitude,
-  haloShapeAmplitude,
-  haloRimWidth,
-  haloOuterStartOffset,
-  haloOuterEndOffset,
-  haloScaleX,
-  haloScaleY,
-  particleBaseSize,
-  particleActiveSize,
-  blobScaleX,
-  blobScaleY,
-  particleRotationSpeed,
-  particleRotationJitter,
-  particleCursorFollowStrength,
-  particleOscillationFactor,
-  onRadiusChange,
-  onStrengthChange,
-  onDragFactorChange,
-  onOuterOscFrequencyChange,
-  onOuterOscAmplitudeChange,
-  onOuterOscJitterStrengthChange,
-  onOuterOscJitterSpeedChange,
-  onHaloRadiusBaseChange,
-  onHaloRadiusAmplitudeChange,
-  onHaloShapeAmplitudeChange,
-  onHaloRimWidthChange,
-  onHaloOuterStartOffsetChange,
-  onHaloOuterEndOffsetChange,
-  onHaloScaleXChange,
-  onHaloScaleYChange,
-  onParticleBaseSizeChange,
-  onParticleActiveSizeChange,
-  onBlobScaleXChange,
-  onBlobScaleYChange,
-  onParticleRotationSpeedChange,
-  onParticleRotationJitterChange,
-  onParticleCursorFollowStrengthChange,
-  onParticleOscillationFactorChange,
+  settings,
+  schema,
+  onChange,
   onSave,
   onReset,
   onExport,
@@ -66,232 +26,28 @@ const SettingsMenu = ({
       {showSettings && (
         <div className="settings-dialog" role="dialog" aria-label="Scene settings">
           <div className="settings-title">Scene Settings</div>
-          <details className="settings-accordion" open>
-            <summary>Cursor</summary>
-            <label className="settings-row">
-              <span>Hover Radius</span>
-              <input
-                type="number"
-                step="0.001"
-                value={radius}
-                onChange={(event) => onRadiusChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Hover Strength</span>
-              <input
-                type="number"
-                step="0.01"
-                value={strength}
-                onChange={(event) => onStrengthChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Drag Factor</span>
-              <input
-                type="number"
-                step="0.001"
-                value={dragFactor}
-                onChange={(event) => onDragFactorChange(Number(event.target.value))}
-              />
-            </label>
-          </details>
-          <details className="settings-accordion">
-            <summary>Halo</summary>
-            <label className="settings-row">
-              <span>Outer Osc Frequency</span>
-              <input
-                type="number"
-                step="0.05"
-                value={outerOscFrequency}
-                onChange={(event) => onOuterOscFrequencyChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Outer Osc Strength</span>
-              <input
-                type="number"
-                step="0.01"
-                value={outerOscAmplitude}
-                onChange={(event) => onOuterOscAmplitudeChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Outer Osc Jitter Strength</span>
-              <input
-                type="number"
-                step="0.01"
-                value={outerOscJitterStrength}
-                onChange={(event) =>
-                  onOuterOscJitterStrengthChange(Number(event.target.value))
-                }
-              />
-            </label>
-            <label className="settings-row">
-              <span>Outer Osc Jitter Speed</span>
-              <input
-                type="number"
-                step="0.01"
-                value={outerOscJitterSpeed}
-                onChange={(event) => onOuterOscJitterSpeedChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Radius Base</span>
-              <input
-                type="number"
-                step="0.01"
-                value={haloRadiusBase}
-                onChange={(event) => onHaloRadiusBaseChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Radius Amplitude</span>
-              <input
-                type="number"
-                step="0.01"
-                value={haloRadiusAmplitude}
-                onChange={(event) => onHaloRadiusAmplitudeChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Shape Amplitude</span>
-              <input
-                type="number"
-                step="0.01"
-                value={haloShapeAmplitude}
-                onChange={(event) => onHaloShapeAmplitudeChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Rim Width</span>
-              <input
-                type="number"
-                step="0.01"
-                value={haloRimWidth}
-                onChange={(event) => onHaloRimWidthChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Outer Start Offset</span>
-              <input
-                type="number"
-                step="0.01"
-                value={haloOuterStartOffset}
-                onChange={(event) => onHaloOuterStartOffsetChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Outer End Offset</span>
-              <input
-                type="number"
-                step="0.01"
-                value={haloOuterEndOffset}
-                onChange={(event) => onHaloOuterEndOffsetChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Halo Width</span>
-              <input
-                type="number"
-                step="0.01"
-                value={haloScaleX}
-                onChange={(event) => onHaloScaleXChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Halo Height</span>
-              <input
-                type="number"
-                step="0.01"
-                value={haloScaleY}
-                onChange={(event) => onHaloScaleYChange(Number(event.target.value))}
-              />
-            </label>
-          </details>
-          <details className="settings-accordion">
-            <summary>Particles</summary>
-            <label className="settings-row">
-              <span>Base Size</span>
-              <input
-                type="number"
-                step="0.001"
-                value={particleBaseSize}
-                onChange={(event) => onParticleBaseSizeChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Active Size</span>
-              <input
-                type="number"
-                step="0.001"
-                value={particleActiveSize}
-                onChange={(event) => onParticleActiveSizeChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Blob Width</span>
-              <input
-                type="number"
-                step="0.01"
-                value={blobScaleX}
-                onChange={(event) => onBlobScaleXChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Blob Height</span>
-              <input
-                type="number"
-                step="0.01"
-                value={blobScaleY}
-                onChange={(event) => onBlobScaleYChange(Number(event.target.value))}
-              />
-            </label>
-            <label className="settings-row">
-              <span>Rotation Speed</span>
-              <input
-                type="number"
-                step="0.05"
-                value={particleRotationSpeed}
-                onChange={(event) =>
-                  onParticleRotationSpeedChange(Number(event.target.value))
-                }
-              />
-            </label>
-            <label className="settings-row">
-              <span>Rotation Jitter</span>
-              <input
-                type="number"
-                step="0.01"
-                value={particleRotationJitter}
-                onChange={(event) =>
-                  onParticleRotationJitterChange(Number(event.target.value))
-                }
-              />
-            </label>
-            <label className="settings-row">
-              <span>Cursor Follow Strength</span>
-              <input
-                type="number"
-                step="0.05"
-                value={particleCursorFollowStrength}
-                onChange={(event) =>
-                  onParticleCursorFollowStrengthChange(Number(event.target.value))
-                }
-              />
-            </label>
-            <label className="settings-row">
-              <span>Oscillation Factor</span>
-              <input
-                type="number"
-                step="0.05"
-                value={particleOscillationFactor}
-                onChange={(event) =>
-                  onParticleOscillationFactorChange(Number(event.target.value))
-                }
-              />
-            </label>
-          </details>
+          {schema.map((section, index) => (
+            <details
+              className="settings-accordion"
+              key={section.id}
+              open={index === 0}
+            >
+              <summary>{section.label}</summary>
+              {section.fields.map((field) => (
+                <label className="settings-row" key={field.path}>
+                  <span>{field.label}</span>
+                  <input
+                    type="number"
+                    step={field.step}
+                    value={getValue(settings, field.path)}
+                    onChange={(event) =>
+                      onChange(field.path, Number(event.target.value))
+                    }
+                  />
+                </label>
+              ))}
+            </details>
+          ))}
           <button
             className={`settings-save ${hasDirtyChanges ? "is-dirty" : "is-saved"}`}
             type="button"
