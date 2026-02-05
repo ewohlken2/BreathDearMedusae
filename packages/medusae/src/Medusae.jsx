@@ -1,34 +1,48 @@
 /* eslint-disable react-hooks/immutability */
-import { useRef, useMemo, useEffect } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useMemo, useRef } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import "./medusae.css";
 
-const Particles = ({
-  cursorJitterRadius = 0.03,
-  cursorJitterStrength = 1,
-  cursorDragFactor = 0.055,
-  outerOscFrequency = 2.6,
-  outerOscAmplitude = 0.56,
-  haloRadiusBase = 2.2,
-  haloRadiusAmplitude = 0.3,
-  haloShapeAmplitude = 0.5,
-  haloRimWidth = 1.8,
-  haloOuterStartOffset = 0.2,
-  haloOuterEndOffset = 2.2,
-  particleBaseSize = 0.012,
-  particleActiveSize = 0.055,
-  blobScaleX = 1.0,
-  blobScaleY = 0.85,
-}) => {
+const DEFAULTS = {
+  cursor: {
+    radius: 0.065,
+    strength: 2,
+    dragFactor: 0.015,
+  },
+  halo: {
+    outerOscFrequency: 2.6,
+    outerOscAmplitude: 0.76,
+    radiusBase: 2.2,
+    radiusAmplitude: 0.5,
+    shapeAmplitude: 0.75,
+    rimWidth: 1.8,
+    outerStartOffset: 0.4,
+    outerEndOffset: 2.2,
+  },
+  particles: {
+    baseSize: 0.012,
+    activeSize: 0.055,
+    blobScaleX: 1.0,
+    blobScaleY: 0.75,
+  },
+};
+
+const mergeConfig = (config) => ({
+  cursor: { ...DEFAULTS.cursor, ...(config?.cursor ?? {}) },
+  halo: { ...DEFAULTS.halo, ...(config?.halo ?? {}) },
+  particles: { ...DEFAULTS.particles, ...(config?.particles ?? {}) },
+});
+
+const Particles = ({ config }) => {
   const meshRef = useRef();
   const { viewport } = useThree();
+  const merged = useMemo(() => mergeConfig(config), [config]);
 
-  // User: "Add a bit more particles"
   const countX = 100;
   const countY = 55;
   const count = countX * countY;
 
-  // Use a Plane for the pill shape. We will stretch it in the shader.
   const geometry = useMemo(() => new THREE.PlaneGeometry(1, 1), []);
 
   const uniforms = useMemo(
@@ -38,33 +52,20 @@ const Particles = ({
       uResolution: {
         value: new THREE.Vector2(window.innerWidth, window.innerHeight),
       },
-      uOuterOscFrequency: { value: outerOscFrequency },
-      uOuterOscAmplitude: { value: outerOscAmplitude },
-      uHaloRadiusBase: { value: haloRadiusBase },
-      uHaloRadiusAmplitude: { value: haloRadiusAmplitude },
-      uHaloShapeAmplitude: { value: haloShapeAmplitude },
-      uHaloRimWidth: { value: haloRimWidth },
-      uHaloOuterStartOffset: { value: haloOuterStartOffset },
-      uHaloOuterEndOffset: { value: haloOuterEndOffset },
-      uParticleBaseSize: { value: particleBaseSize },
-      uParticleActiveSize: { value: particleActiveSize },
-      uBlobScaleX: { value: blobScaleX },
-      uBlobScaleY: { value: blobScaleY },
+      uOuterOscFrequency: { value: DEFAULTS.halo.outerOscFrequency },
+      uOuterOscAmplitude: { value: DEFAULTS.halo.outerOscAmplitude },
+      uHaloRadiusBase: { value: DEFAULTS.halo.radiusBase },
+      uHaloRadiusAmplitude: { value: DEFAULTS.halo.radiusAmplitude },
+      uHaloShapeAmplitude: { value: DEFAULTS.halo.shapeAmplitude },
+      uHaloRimWidth: { value: DEFAULTS.halo.rimWidth },
+      uHaloOuterStartOffset: { value: DEFAULTS.halo.outerStartOffset },
+      uHaloOuterEndOffset: { value: DEFAULTS.halo.outerEndOffset },
+      uParticleBaseSize: { value: DEFAULTS.particles.baseSize },
+      uParticleActiveSize: { value: DEFAULTS.particles.activeSize },
+      uBlobScaleX: { value: DEFAULTS.particles.blobScaleX },
+      uBlobScaleY: { value: DEFAULTS.particles.blobScaleY },
     }),
-    [
-      blobScaleX,
-      blobScaleY,
-      haloOuterEndOffset,
-      haloOuterStartOffset,
-      haloRadiusAmplitude,
-      haloRadiusBase,
-      haloRimWidth,
-      haloShapeAmplitude,
-      outerOscAmplitude,
-      outerOscFrequency,
-      particleActiveSize,
-      particleBaseSize,
-    ],
+    [],
   );
 
   const material = useMemo(
@@ -124,16 +125,11 @@ const Particles = ({
                 // --- 1. ALIVE FLOW (Base layer) ---
                 vec3 pos = aOffset;
                 
-                // "Grid breaking" flow: Particles shouldn't stand still.
-                // We apply a slow, continuous drift based on noise/sine fields.
-                // This makes the whole field feel like a fluid medium (water/air).
                 float driftSpeed = uTime * 0.15;
                 
-                // Curl-like flowing motion
                 float dx = sin(driftSpeed + pos.y * 0.5) + sin(driftSpeed * 0.5 + pos.y * 2.0);
                 float dy = cos(driftSpeed + pos.x * 0.5) + cos(driftSpeed * 0.5 + pos.x * 2.0);
                 
-                // subtle constant movement
                 pos.x += dx * 0.25; 
                 pos.y += dy * 0.25;
 
@@ -144,11 +140,8 @@ const Particles = ({
                 float angleToMouse = atan(relToMouse.y, relToMouse.x);
                 vec2 dirToMouse = normalize(relToMouse + vec2(0.0001, 0.0));
                 
-                // Organic Halo Shape
-                // Very slow evolution of the noise (uTime * 0.1) to avoid "jumpy"
                 float shapeFactor = noise(dirToMouse * 2.0 + vec2(0.0, uTime * 0.1));
                 
-                // Tunables
                 float radiusBase = uHaloRadiusBase;
                 float radiusAmplitude = uHaloRadiusAmplitude;
                 float shapeAmplitude = uHaloShapeAmplitude;
@@ -156,51 +149,34 @@ const Particles = ({
                 float outerStartOffset = uHaloOuterStartOffset;
                 float outerEndOffset = uHaloOuterEndOffset;
 
-                // The "Breathing" is now a slow expansion/contraction of the Halo Radius
-                // nice and easy...
-                float breathCycle = sin(uTime * 0.8); // Smooth -1 to 1
+                float breathCycle = sin(uTime * 0.8);
                 
-                // Radius breathes: base +/- amplitude
                 float baseRadius = radiusBase + breathCycle * radiusAmplitude;
                 float currentRadius = baseRadius + (shapeFactor * shapeAmplitude);
                 
-                // Interaction Ring Calculation
                 float dist = distFromMouse; 
                 float rimInfluence = smoothstep(rimWidth, 0.0, abs(dist - currentRadius));
                 
-                // --- 3. WAVE MOVEMENT (Gentle Ripple) ---
-                // Instead of a fast travel wave, we just gently push particles out
-                // when the Halo expands.
-                
                 vec2 pushDir = normalize(relToMouse + vec2(0.0001, 0.0));
                 
-                // Align push with the breath cycle
-                // Increased push for "more alive" feeling
-                float pushAmt = (breathCycle * 0.5 + 0.5) * 0.5; // 0 to 0.5
+                float pushAmt = (breathCycle * 0.5 + 0.5) * 0.5;
                 
-                // Apply push mostly near the ring
                 pos.xy += pushDir * pushAmt * rimInfluence;
                 
-                // 3D: Subtle Z float
                 pos.z += rimInfluence * 0.3 * sin(uTime);
 
                 // --- 3.5 OUTER OSCILLATION (Smooth, Faster) ---
-                // Faster motion outside the halo, but eased in smoothly.
                 float outerInfluence = smoothstep(baseRadius + outerStartOffset, baseRadius + outerEndOffset, dist);
                 float outerOsc = sin(uTime * uOuterOscFrequency + pos.x * 0.6 + pos.y * 0.6);
                 pos.xy += normalize(relToMouse + vec2(0.0001, 0.0)) * outerOsc * uOuterOscAmplitude * outerInfluence;
 
                 // --- 4. SIZE & SCALE ---
                 
-                // Base size fluctuates slightly with flow
                 float baseSize = uParticleBaseSize + (sin(uTime + pos.x)*0.003);
                 
-                // Grow on ring
-                // Smooth transition
                 float activeSize = uParticleActiveSize; 
                 float currentScale = baseSize + (rimInfluence * activeSize);
                 
-                // Stretch (Minimal)
                 float stretch = rimInfluence * 0.02;
                 
                 vec3 transformed = position;
@@ -212,11 +188,6 @@ const Particles = ({
                 
                 // --- 5. ROTATION ---
                 
-                // --- 5. ROTATION ---
-
-                // User: "Must be directed towards mouse" (Radial)
-                
-                // Align with direction vector directly to avoid atan wrap jumps.
                 float dirLen = max(length(relToMouse), 0.0001);
                 vec2 dir = relToMouse / dirLen;
                 float jitter = sin(uTime * 0.8 + pos.x * 0.35 + pos.y * 0.35) * 0.08;
@@ -235,7 +206,6 @@ const Particles = ({
             varying vec2 vPos;
 
             void main() {
-                // Shape: "Rectangle with radius"
                 vec2 center = vec2(0.5);
                 vec2 pos = abs(vUv - center) * 2.0; 
                 
@@ -244,24 +214,19 @@ const Particles = ({
                 
                 if (alpha < 0.01) discard;
 
-                // Google Brand Colors
                 vec3 black = vec3(0.08, 0.08, 0.1);
                 vec3 cBlue = vec3(0.26, 0.52, 0.96);
                 vec3 cRed = vec3(0.92, 0.26, 0.21);
                 vec3 cYellow = vec3(0.98, 0.73, 0.01);
                 
-                // --- Dynamic Color Shifting ---
-                float t = uTime * 1.2; // FASTER color transition
+                float t = uTime * 1.2;
                 
-                // Higher frequency (0.8) = smaller, more numerous color zones
                 float p1 = sin(vPos.x * 0.8 + t);
                 float p2 = sin(vPos.y * 0.8 + t * 0.8 + p1);
                 
-                // Mixed zones
                 vec3 activeColor = mix(cBlue, cRed, p1 * 0.5 + 0.5);
                 activeColor = mix(activeColor, cYellow, p2 * 0.5 + 0.5);
                 
-                // Mix with black for idle state
                 vec3 finalColor = mix(black, activeColor, smoothstep(0.1, 0.8, vSize));
                 float finalAlpha = alpha * mix(0.4, 0.95, vSize);
 
@@ -275,59 +240,40 @@ const Particles = ({
   );
 
   useEffect(() => {
-    material.uniforms.uOuterOscFrequency.value = outerOscFrequency;
-    material.uniforms.uOuterOscAmplitude.value = outerOscAmplitude;
-    material.uniforms.uHaloRadiusBase.value = haloRadiusBase;
-    material.uniforms.uHaloRadiusAmplitude.value = haloRadiusAmplitude;
-    material.uniforms.uHaloShapeAmplitude.value = haloShapeAmplitude;
-    material.uniforms.uHaloRimWidth.value = haloRimWidth;
-    material.uniforms.uHaloOuterStartOffset.value = haloOuterStartOffset;
-    material.uniforms.uHaloOuterEndOffset.value = haloOuterEndOffset;
-    material.uniforms.uParticleBaseSize.value = particleBaseSize;
-    material.uniforms.uParticleActiveSize.value = particleActiveSize;
-    material.uniforms.uBlobScaleX.value = blobScaleX;
-    material.uniforms.uBlobScaleY.value = blobScaleY;
-  }, [
-    material,
-    outerOscFrequency,
-    outerOscAmplitude,
-    haloRadiusBase,
-    haloRadiusAmplitude,
-    haloShapeAmplitude,
-    haloRimWidth,
-    haloOuterStartOffset,
-    haloOuterEndOffset,
-    particleBaseSize,
-    particleActiveSize,
-    blobScaleX,
-    blobScaleY,
-  ]);
+    material.uniforms.uOuterOscFrequency.value = merged.halo.outerOscFrequency;
+    material.uniforms.uOuterOscAmplitude.value = merged.halo.outerOscAmplitude;
+    material.uniforms.uHaloRadiusBase.value = merged.halo.radiusBase;
+    material.uniforms.uHaloRadiusAmplitude.value = merged.halo.radiusAmplitude;
+    material.uniforms.uHaloShapeAmplitude.value = merged.halo.shapeAmplitude;
+    material.uniforms.uHaloRimWidth.value = merged.halo.rimWidth;
+    material.uniforms.uHaloOuterStartOffset.value = merged.halo.outerStartOffset;
+    material.uniforms.uHaloOuterEndOffset.value = merged.halo.outerEndOffset;
+    material.uniforms.uParticleBaseSize.value = merged.particles.baseSize;
+    material.uniforms.uParticleActiveSize.value = merged.particles.activeSize;
+    material.uniforms.uBlobScaleX.value = merged.particles.blobScaleX;
+    material.uniforms.uBlobScaleY.value = merged.particles.blobScaleY;
+  }, [material, merged]);
 
   useEffect(() => {
     if (!meshRef.current) return;
 
-    // Populate attributes
     const offsets = new Float32Array(count * 3);
     const randoms = new Float32Array(count);
-    const angles = new Float32Array(count); // Random initial angles
+    const angles = new Float32Array(count);
 
-    // Spread them out more since we reduced count
     const gridWidth = 40;
     const gridHeight = 22;
-    const jitter = 0.25; // Subtle jitter - more grid-like but still organic
+    const jitter = 0.25;
 
     let i = 0;
     for (let y = 0; y < countY; y++) {
       for (let x = 0; x < countX; x++) {
-        // Normalized grid coords 0..1
         const u = x / (countX - 1);
         const v = y / (countY - 1);
 
-        // Base grid position centered
         let px = (u - 0.5) * gridWidth;
         let py = (v - 0.5) * gridHeight;
 
-        // Add NOISE to the grid
         px += (Math.random() - 0.5) * jitter;
         py += (Math.random() - 0.5) * jitter;
 
@@ -355,7 +301,6 @@ const Particles = ({
     );
   }, [count, countX, countY]);
 
-  // Track if mouse is on screen
   const hovering = useRef(true);
 
   useEffect(() => {
@@ -375,30 +320,24 @@ const Particles = ({
     const { clock, pointer } = state;
     material.uniforms.uTime.value = clock.getElapsedTime();
 
-    // Determine Target
     let targetX = null;
     let targetY = null;
 
-    // Only follow pointer if mouse is on screen
-        if (hovering.current) {
-            const baseX = (pointer.x * viewport.width) / 2;
-            const baseY = (pointer.y * viewport.height) / 2;
-            const t = clock.getElapsedTime();
-            const jitterRadius = Math.min(viewport.width, viewport.height) * cursorJitterRadius;
-            const jitterX = (Math.sin(t * 0.35) + Math.sin(t * 0.77 + 1.2)) * 0.5;
-            const jitterY = (Math.cos(t * 0.31) + Math.sin(t * 0.63 + 2.4)) * 0.5;
-            targetX = baseX + jitterX * jitterRadius * cursorJitterStrength;
-            targetY = baseY + jitterY * jitterRadius * cursorJitterStrength;
-        }
+    if (hovering.current) {
+      const baseX = (pointer.x * viewport.width) / 2;
+      const baseY = (pointer.y * viewport.height) / 2;
+      const t = clock.getElapsedTime();
+      const jitterRadius =
+        Math.min(viewport.width, viewport.height) * merged.cursor.radius;
+      const jitterX = (Math.sin(t * 0.35) + Math.sin(t * 0.77 + 1.2)) * 0.5;
+      const jitterY = (Math.cos(t * 0.31) + Math.sin(t * 0.63 + 2.4)) * 0.5;
+      targetX = baseX + jitterX * jitterRadius * merged.cursor.strength;
+      targetY = baseY + jitterY * jitterRadius * merged.cursor.strength;
+    }
 
-    // Current: Center of Gravity
     const current = material.uniforms.uMouse.value;
+    const dragFactor = merged.cursor.dragFactor;
 
-    // "Heavy" Drag: Reduced to 0.015 for more weight
-        const dragFactor = cursorDragFactor;
-
-    // If it's the very first frame or mouse just entered, we might want to snap
-    // but for now, initializing to 0,0 already makes it appear instantly at center.
     if (targetX !== null && targetY !== null) {
       current.x += (targetX - current.x) * dragFactor;
       current.y += (targetY - current.y) * dragFactor;
@@ -408,4 +347,15 @@ const Particles = ({
   return <instancedMesh ref={meshRef} args={[geometry, material, count]} />;
 };
 
-export default Particles;
+const Medusae = ({ className, config, style }) => {
+  return (
+    <div className={className ? `medusae-root ${className}` : "medusae-root"} style={style}>
+      <Canvas className="medusae-canvas" camera={{ position: [0, 0, 5] }}>
+        <color attach="background" args={["#ffffff"]} />
+        <Particles config={config} />
+      </Canvas>
+    </div>
+  );
+};
+
+export default Medusae;

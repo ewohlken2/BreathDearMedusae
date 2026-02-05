@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
-import Particles from './assets/medusae';
 import './App.css';
 import SETTINGS_CONFIG from "./data/settingsConfig";
 import SettingsMenu from "./components/SettingsMenu";
+import { Medusae } from "../packages/medusae/src";
+import "../packages/medusae/src/medusae.css";
 
 function App() {
   const [savedSettings, setSavedSettings] = useState(() => {
@@ -304,26 +304,31 @@ function App() {
         hasDirtyChanges={hasDirtyChanges}
       />
       {exportNotice && <div className="copy-notice">Copied to clipboard</div>}
-      <Canvas camera={{ position: [0, 0, 5] }}>
-        <color attach="background" args={["#ffffff"]} />
-        <Particles
-          cursorJitterRadius={cursorJitterRadius}
-          cursorJitterStrength={cursorJitterStrength}
-          cursorDragFactor={cursorDragFactor}
-          outerOscFrequency={outerOscFrequency}
-          outerOscAmplitude={outerOscAmplitude}
-          haloRadiusBase={haloRadiusBase}
-          haloRadiusAmplitude={haloRadiusAmplitude}
-          haloShapeAmplitude={haloShapeAmplitude}
-          haloRimWidth={haloRimWidth}
-          haloOuterStartOffset={haloOuterStartOffset}
-          haloOuterEndOffset={haloOuterEndOffset}
-          particleBaseSize={particleBaseSize}
-          particleActiveSize={particleActiveSize}
-          blobScaleX={blobScaleX}
-          blobScaleY={blobScaleY}
-        />
-      </Canvas>
+      <Medusae
+        config={{
+          cursor: {
+            radius: cursorJitterRadius,
+            strength: cursorJitterStrength,
+            dragFactor: cursorDragFactor,
+          },
+          halo: {
+            outerOscFrequency,
+            outerOscAmplitude,
+            radiusBase: haloRadiusBase,
+            radiusAmplitude: haloRadiusAmplitude,
+            shapeAmplitude: haloShapeAmplitude,
+            rimWidth: haloRimWidth,
+            outerStartOffset: haloOuterStartOffset,
+            outerEndOffset: haloOuterEndOffset,
+          },
+          particles: {
+            baseSize: particleBaseSize,
+            activeSize: particleActiveSize,
+            blobScaleX,
+            blobScaleY,
+          },
+        }}
+      />
     </div>
   );
 }
