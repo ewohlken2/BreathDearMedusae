@@ -40,9 +40,9 @@ const SETTINGS_CONFIG = {
             label: "Particles",
             fields: [
                 { path: "particles.colorBase", label: "Base Color", type: "color" },
-                { path: "particles.colorBlue", label: "Blue", type: "color" },
-                { path: "particles.colorRed", label: "Red", type: "color" },
-                { path: "particles.colorYellow", label: "Yellow", type: "color" },
+                { path: "particles.colorOne", label: "Color 1", type: "color" },
+                { path: "particles.colorTwo", label: "Color 2", type: "color" },
+                { path: "particles.colorThree", label: "Color 3", type: "color" },
                 { path: "particles.baseSize", label: "Base Size", step: 0.001 },
                 { path: "particles.activeSize", label: "Active Size", step: 0.001 },
                 { path: "particles.blobScaleX", label: "Blob Width", step: 0.01 },

@@ -11,7 +11,7 @@ test("medusae defaults include cursor/halo/particles", () => {
 test("particle defaults include color palette strings", () => {
   const particles = MEDUSAE_DEFAULTS.particles;
   assert.equal(typeof particles.colorBase, "string");
-  assert.equal(typeof particles.colorBlue, "string");
-  assert.equal(typeof particles.colorRed, "string");
-  assert.equal(typeof particles.colorYellow, "string");
+  assert.equal(typeof particles.colorOne, "string");
+  assert.equal(typeof particles.colorTwo, "string");
+  assert.equal(typeof particles.colorThree, "string");
 });

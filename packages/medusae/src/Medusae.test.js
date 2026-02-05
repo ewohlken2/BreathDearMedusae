@@ -13,9 +13,9 @@ test("medusae shader exposes particle color uniforms", () => {
   const filePath = path.join(process.cwd(), "packages/medusae/src/Medusae.jsx");
   const contents = fs.readFileSync(filePath, "utf8");
   assert.ok(contents.includes("uParticleColorBase"));
-  assert.ok(contents.includes("uParticleColorBlue"));
-  assert.ok(contents.includes("uParticleColorRed"));
-  assert.ok(contents.includes("uParticleColorYellow"));
+  assert.ok(contents.includes("uParticleColorOne"));
+  assert.ok(contents.includes("uParticleColorTwo"));
+  assert.ok(contents.includes("uParticleColorThree"));
 });
 
 test("fragment shader declares particle color uniforms", () => {
@@ -27,7 +27,7 @@ test("fragment shader declares particle color uniforms", () => {
   assert.ok(fragmentEnd > fragmentStart);
   const fragmentSource = contents.slice(fragmentStart, fragmentEnd);
   assert.ok(fragmentSource.includes("uniform vec3 uParticleColorBase;"));
-  assert.ok(fragmentSource.includes("uniform vec3 uParticleColorBlue;"));
-  assert.ok(fragmentSource.includes("uniform vec3 uParticleColorRed;"));
-  assert.ok(fragmentSource.includes("uniform vec3 uParticleColorYellow;"));
+  assert.ok(fragmentSource.includes("uniform vec3 uParticleColorOne;"));
+  assert.ok(fragmentSource.includes("uniform vec3 uParticleColorTwo;"));
+  assert.ok(fragmentSource.includes("uniform vec3 uParticleColorThree;"));
 });

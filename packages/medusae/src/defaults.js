@@ -28,9 +28,9 @@ const MEDUSAE_DEFAULTS = {
     cursorFollowStrength: 1,
     oscillationFactor: 1,
     colorBase: "#141419",
-    colorBlue: "#4285f5",
-    colorRed: "#eb4236",
-    colorYellow: "#faba03",
+    colorOne: "#4285f5",
+    colorTwo: "#eb4236",
+    colorThree: "#faba03",
   },
 };
 

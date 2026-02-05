@@ -28,9 +28,9 @@ export interface MedusaeConfig {
     cursorFollowStrength?: number;
     oscillationFactor?: number;
     colorBase?: string;
-    colorBlue?: string;
-    colorRed?: string;
-    colorYellow?: string;
+    colorOne?: string;
+    colorTwo?: string;
+    colorThree?: string;
   };
 }
 

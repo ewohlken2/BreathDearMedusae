@@ -49,14 +49,14 @@ const Particles = ({ config }) => {
       uParticleColorBase: {
         value: new THREE.Color(MEDUSAE_DEFAULTS.particles.colorBase),
       },
-      uParticleColorBlue: {
-        value: new THREE.Color(MEDUSAE_DEFAULTS.particles.colorBlue),
+      uParticleColorOne: {
+        value: new THREE.Color(MEDUSAE_DEFAULTS.particles.colorOne),
       },
-      uParticleColorRed: {
-        value: new THREE.Color(MEDUSAE_DEFAULTS.particles.colorRed),
+      uParticleColorTwo: {
+        value: new THREE.Color(MEDUSAE_DEFAULTS.particles.colorTwo),
       },
-      uParticleColorYellow: {
-        value: new THREE.Color(MEDUSAE_DEFAULTS.particles.colorYellow),
+      uParticleColorThree: {
+        value: new THREE.Color(MEDUSAE_DEFAULTS.particles.colorThree),
       },
     }),
     [],
@@ -87,9 +87,9 @@ const Particles = ({ config }) => {
             uniform float uParticleRotationJitter;
             uniform float uParticleOscillationFactor;
             uniform vec3 uParticleColorBase;
-            uniform vec3 uParticleColorBlue;
-            uniform vec3 uParticleColorRed;
-            uniform vec3 uParticleColorYellow;
+            uniform vec3 uParticleColorOne;
+            uniform vec3 uParticleColorTwo;
+            uniform vec3 uParticleColorThree;
             varying vec2 vUv;
             varying float vSize;
             varying vec2 vPos;
@@ -214,9 +214,9 @@ const Particles = ({ config }) => {
         fragmentShader: `
             uniform float uTime;
             uniform vec3 uParticleColorBase;
-            uniform vec3 uParticleColorBlue;
-            uniform vec3 uParticleColorRed;
-            uniform vec3 uParticleColorYellow;
+            uniform vec3 uParticleColorOne;
+            uniform vec3 uParticleColorTwo;
+            uniform vec3 uParticleColorThree;
             varying vec2 vUv;
             varying float vSize;
             varying vec2 vPos;
@@ -231,9 +231,9 @@ const Particles = ({ config }) => {
                 if (alpha < 0.01) discard;
 
                 vec3 black = uParticleColorBase;
-                vec3 cBlue = uParticleColorBlue;
-                vec3 cRed = uParticleColorRed;
-                vec3 cYellow = uParticleColorYellow;
+                vec3 cBlue = uParticleColorOne;
+                vec3 cRed = uParticleColorTwo;
+                vec3 cYellow = uParticleColorThree;
                 
                 float t = uTime * 1.2;
                 
@@ -275,10 +275,10 @@ const Particles = ({ config }) => {
     material.uniforms.uParticleOscillationFactor.value =
       merged.particles.oscillationFactor;
     material.uniforms.uParticleColorBase.value.set(merged.particles.colorBase);
-    material.uniforms.uParticleColorBlue.value.set(merged.particles.colorBlue);
-    material.uniforms.uParticleColorRed.value.set(merged.particles.colorRed);
-    material.uniforms.uParticleColorYellow.value.set(
-      merged.particles.colorYellow,
+    material.uniforms.uParticleColorOne.value.set(merged.particles.colorOne);
+    material.uniforms.uParticleColorTwo.value.set(merged.particles.colorTwo);
+    material.uniforms.uParticleColorThree.value.set(
+      merged.particles.colorThree,
     );
   }, [material, merged]);
 

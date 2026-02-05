@@ -25,9 +25,9 @@ test("particle defaults include rotation and cursor follow controls", () => {
 test("particle defaults include color palette and schema fields", () => {
   const particles = SETTINGS_CONFIG.defaults.particles;
   assert.equal(typeof particles.colorBase, "string");
-  assert.equal(typeof particles.colorBlue, "string");
-  assert.equal(typeof particles.colorRed, "string");
-  assert.equal(typeof particles.colorYellow, "string");
+  assert.equal(typeof particles.colorOne, "string");
+  assert.equal(typeof particles.colorTwo, "string");
+  assert.equal(typeof particles.colorThree, "string");
 
   const particlesSection = SETTINGS_CONFIG.settingsSchema.find(
     (section) => section.id === "particles",
