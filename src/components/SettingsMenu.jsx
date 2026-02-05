@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChromePicker } from "react-color";
-import Popover from "react-popover";
+import * as Popover from "@radix-ui/react-popover";
 
 const getValue = (source, path) =>
   path.split(".").reduce((acc, key) => acc?.[key], source);
@@ -51,29 +51,37 @@ const SettingsMenu = ({
                       key={field.path}
                     >
                       <span>{field.label}</span>
-                      <Popover
-                        isOpen={isOpen}
-                        preferPlace="below"
-                        body={
-                          <div className="settings-color-popover">
+                      <Popover.Root
+                        open={isOpen}
+                        onOpenChange={(nextOpen) =>
+                          setOpenColorField(nextOpen ? field.path : null)
+                        }
+                      >
+                        <Popover.Trigger asChild>
+                          <button
+                            className="settings-color-swatch"
+                            style={{ backgroundColor: colorValue }}
+                            type="button"
+                            aria-label={`${field.label} color`}
+                            onClick={() => handleToggleColor(field.path)}
+                          />
+                        </Popover.Trigger>
+                        <Popover.Portal>
+                          <Popover.Content
+                            className="settings-color-popover"
+                            side="bottom"
+                            sideOffset={8}
+                            align="end"
+                          >
                             <ChromePicker
                               color={colorValue}
                               onChange={(color) =>
                                 onChange(field.path, color.hex)
                               }
                             />
-                          </div>
-                        }
-                        onOuterAction={() => setOpenColorField(null)}
-                      >
-                        <button
-                          className="settings-color-swatch"
-                          style={{ backgroundColor: colorValue }}
-                          type="button"
-                          aria-label={`${field.label} color`}
-                          onClick={() => handleToggleColor(field.path)}
-                        />
-                      </Popover>
+                          </Popover.Content>
+                        </Popover.Portal>
+                      </Popover.Root>
                     </label>
                   );
                 }

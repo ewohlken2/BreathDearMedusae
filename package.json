@@ -12,13 +12,13 @@
     "test": "node --test"
   },
   "dependencies": {
+    "@radix-ui/react-popover": "^1.1.15",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@types/three": "^0.182.0",
     "react": "^19.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^19.2.0",
-    "react-popover": "^0.5.10",
     "three": "^0.182.0",
     "user": "^0.0.0"
   },

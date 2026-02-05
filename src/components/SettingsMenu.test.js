@@ -13,5 +13,5 @@ test("settings menu includes color picker support", () => {
   const filePath = path.join(process.cwd(), "src/components/SettingsMenu.jsx");
   const contents = fs.readFileSync(filePath, "utf8");
   assert.ok(contents.includes("ChromePicker"));
-  assert.ok(contents.includes("react-popover"));
+  assert.ok(contents.includes("@radix-ui/react-popover"));
 });
