@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { ChromePicker } from "react-color";
+import Popover from "react-popover";
 
 const getValue = (source, path) =>
   path.split(".").reduce((acc, key) => acc?.[key], source);
@@ -13,6 +15,11 @@ const SettingsMenu = ({
   hasDirtyChanges,
 }) => {
   const [showSettings, setShowSettings] = useState(false);
+  const [openColorField, setOpenColorField] = useState(null);
+
+  const handleToggleColor = (path) => {
+    setOpenColorField((prev) => (prev === path ? null : path));
+  };
 
   return (
     <>
@@ -33,19 +40,58 @@ const SettingsMenu = ({
               open={index === 0}
             >
               <summary>{section.label}</summary>
-              {section.fields.map((field) => (
-                <label className="settings-row" key={field.path}>
-                  <span>{field.label}</span>
-                  <input
-                    type="number"
-                    step={field.step}
-                    value={getValue(settings, field.path)}
-                    onChange={(event) =>
-                      onChange(field.path, Number(event.target.value))
-                    }
-                  />
-                </label>
-              ))}
+              {section.fields.map((field) => {
+                if (field.type === "color") {
+                  const colorValue = getValue(settings, field.path);
+                  const isOpen = openColorField === field.path;
+
+                  return (
+                    <label
+                      className="settings-row settings-color-row"
+                      key={field.path}
+                    >
+                      <span>{field.label}</span>
+                      <Popover
+                        isOpen={isOpen}
+                        preferPlace="below"
+                        body={
+                          <div className="settings-color-popover">
+                            <ChromePicker
+                              color={colorValue}
+                              onChange={(color) =>
+                                onChange(field.path, color.hex)
+                              }
+                            />
+                          </div>
+                        }
+                        onOuterAction={() => setOpenColorField(null)}
+                      >
+                        <button
+                          className="settings-color-swatch"
+                          style={{ backgroundColor: colorValue }}
+                          type="button"
+                          aria-label={`${field.label} color`}
+                          onClick={() => handleToggleColor(field.path)}
+                        />
+                      </Popover>
+                    </label>
+                  );
+                }
+
+                return (
+                  <label className="settings-row" key={field.path}>
+                    <span>{field.label}</span>
+                    <input
+                      type="number"
+                      step={field.step}
+                      value={getValue(settings, field.path)}
+                      onChange={(event) =>
+                        onChange(field.path, Number(event.target.value))
+                      }
+                    />
+                  </label>
+                );
+              })}
             </details>
           ))}
           <button
