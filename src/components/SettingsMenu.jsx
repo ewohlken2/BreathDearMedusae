@@ -6,6 +6,8 @@ const SettingsMenu = ({
   dragFactor,
   outerOscFrequency,
   outerOscAmplitude,
+  outerOscJitterStrength,
+  outerOscJitterSpeed,
   haloRadiusBase,
   haloRadiusAmplitude,
   haloShapeAmplitude,
@@ -21,6 +23,8 @@ const SettingsMenu = ({
   onDragFactorChange,
   onOuterOscFrequencyChange,
   onOuterOscAmplitudeChange,
+  onOuterOscJitterStrengthChange,
+  onOuterOscJitterSpeedChange,
   onHaloRadiusBaseChange,
   onHaloRadiusAmplitudeChange,
   onHaloShapeAmplitudeChange,
@@ -98,6 +102,26 @@ const SettingsMenu = ({
                 step="0.01"
                 value={outerOscAmplitude}
                 onChange={(event) => onOuterOscAmplitudeChange(Number(event.target.value))}
+              />
+            </label>
+            <label className="settings-row">
+              <span>Outer Osc Jitter Strength</span>
+              <input
+                type="number"
+                step="0.01"
+                value={outerOscJitterStrength}
+                onChange={(event) =>
+                  onOuterOscJitterStrengthChange(Number(event.target.value))
+                }
+              />
+            </label>
+            <label className="settings-row">
+              <span>Outer Osc Jitter Speed</span>
+              <input
+                type="number"
+                step="0.01"
+                value={outerOscJitterSpeed}
+                onChange={(event) => onOuterOscJitterSpeedChange(Number(event.target.value))}
               />
             </label>
             <label className="settings-row">
