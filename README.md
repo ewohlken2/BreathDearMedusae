@@ -12,6 +12,10 @@ This project leverages modern web technologies to achieve high-performance 3D gr
 - **[React Three Fiber](https://r3f.docs.pmnd.rs/)** - A powerful React renderer for Three.js.
 - **GLSL Shaders** - Custom vertex and fragment shaders for organic particle movement and shifting gradients.
 
+## 🔗 Preview
+
+`https://breath-dear-medusae.vercel.app/`
+
 ## 🚀 Getting Started
 
 To run the project locally, follow these steps:
