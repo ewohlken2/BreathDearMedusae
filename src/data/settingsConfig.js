@@ -39,6 +39,10 @@ const SETTINGS_CONFIG = {
             id: "particles",
             label: "Particles",
             fields: [
+                { path: "particles.colorBase", label: "Base Color", type: "color" },
+                { path: "particles.colorBlue", label: "Blue", type: "color" },
+                { path: "particles.colorRed", label: "Red", type: "color" },
+                { path: "particles.colorYellow", label: "Yellow", type: "color" },
                 { path: "particles.baseSize", label: "Base Size", step: 0.001 },
                 { path: "particles.activeSize", label: "Active Size", step: 0.001 },
                 { path: "particles.blobScaleX", label: "Blob Width", step: 0.01 },

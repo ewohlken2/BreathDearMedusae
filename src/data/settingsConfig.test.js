@@ -21,3 +21,19 @@ test("particle defaults include rotation and cursor follow controls", () => {
   assert.equal(typeof particles.cursorFollowStrength, "number");
   assert.equal(typeof particles.oscillationFactor, "number");
 });
+
+test("particle defaults include color palette and schema fields", () => {
+  const particles = SETTINGS_CONFIG.defaults.particles;
+  assert.equal(typeof particles.colorBase, "string");
+  assert.equal(typeof particles.colorBlue, "string");
+  assert.equal(typeof particles.colorRed, "string");
+  assert.equal(typeof particles.colorYellow, "string");
+
+  const particlesSection = SETTINGS_CONFIG.settingsSchema.find(
+    (section) => section.id === "particles",
+  );
+  const colorFields = particlesSection.fields.filter(
+    (field) => field.type === "color",
+  );
+  assert.equal(colorFields.length, 4);
+});
