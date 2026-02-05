@@ -2,7 +2,7 @@ import { useRef, useMemo, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
-const Particles = () => {
+const Particles = ({ cursorJitterRadius = 0.03, cursorJitterStrength = 1 }) => {
   const meshRef = useRef();
   const { viewport } = useThree();
 
@@ -88,10 +88,11 @@ const Particles = () => {
                 vec2 relToMouse = pos.xy - uMouse;
                 float distFromMouse = length(relToMouse);
                 float angleToMouse = atan(relToMouse.y, relToMouse.x);
+                vec2 dirToMouse = normalize(relToMouse + vec2(0.0001, 0.0));
                 
                 // Organic Halo Shape
                 // Very slow evolution of the noise (uTime * 0.1) to avoid "jumpy"
-                float shapeFactor = noise(vec2(angleToMouse * 2.0, uTime * 0.1));
+                float shapeFactor = noise(dirToMouse * 2.0 + vec2(0.0, uTime * 0.1));
                 
                 // Tunables
                 float radiusBase = 2.2;
@@ -164,12 +165,11 @@ const Particles = () => {
                 // User: "Must be directed towards mouse" (Radial)
                 
                 // Align with direction vector directly to avoid atan wrap jumps.
-                vec2 dir = normalize(relToMouse + vec2(0.0001, 0.0));
-                float jitter = sin(uTime * 1.8 + pos.x * 0.35 + pos.y * 0.35) * 0.68;
-                float cj = cos(jitter);
-                float sj = sin(jitter);
-                mat2 rotJitter = mat2(cj, -sj, sj, cj);
-                vec2 jitteredDir = normalize(rotJitter * dir);
+                float dirLen = max(length(relToMouse), 0.0001);
+                vec2 dir = relToMouse / dirLen;
+                float jitter = sin(uTime * 0.8 + pos.x * 0.35 + pos.y * 0.35) * 0.08;
+                vec2 perp = vec2(-dir.y, dir.x);
+                vec2 jitteredDir = normalize(dir + perp * jitter);
                 mat2 rot = mat2(jitteredDir.x, jitteredDir.y, -jitteredDir.y, jitteredDir.x);
                 transformed.xy = rot * transformed.xy;
                 
@@ -299,10 +299,16 @@ const Particles = () => {
     let targetY = null;
 
     // Only follow pointer if mouse is on screen
-    if (hovering.current) {
-      targetX = (pointer.x * viewport.width) / 2;
-      targetY = (pointer.y * viewport.height) / 2;
-    }
+        if (hovering.current) {
+            const baseX = (pointer.x * viewport.width) / 2;
+            const baseY = (pointer.y * viewport.height) / 2;
+            const t = clock.getElapsedTime();
+            const jitterRadius = Math.min(viewport.width, viewport.height) * cursorJitterRadius;
+            const jitterX = (Math.sin(t * 0.35) + Math.sin(t * 0.77 + 1.2)) * 0.5;
+            const jitterY = (Math.cos(t * 0.31) + Math.sin(t * 0.63 + 2.4)) * 0.5;
+            targetX = baseX + jitterX * jitterRadius * cursorJitterStrength;
+            targetY = baseY + jitterY * jitterRadius * cursorJitterStrength;
+        }
 
     // Current: Center of Gravity
     const current = material.uniforms.uMouse.value;
