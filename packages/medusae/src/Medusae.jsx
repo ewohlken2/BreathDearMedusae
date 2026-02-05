@@ -25,6 +25,10 @@ const DEFAULTS = {
     activeSize: 0.055,
     blobScaleX: 1.0,
     blobScaleY: 0.75,
+    rotationSpeed: 0.8,
+    rotationJitter: 0.08,
+    cursorFollowStrength: 1,
+    oscillationFactor: 1,
   },
 };
 
@@ -64,6 +68,9 @@ const Particles = ({ config }) => {
       uParticleActiveSize: { value: DEFAULTS.particles.activeSize },
       uBlobScaleX: { value: DEFAULTS.particles.blobScaleX },
       uBlobScaleY: { value: DEFAULTS.particles.blobScaleY },
+      uParticleRotationSpeed: { value: DEFAULTS.particles.rotationSpeed },
+      uParticleRotationJitter: { value: DEFAULTS.particles.rotationJitter },
+      uParticleOscillationFactor: { value: DEFAULTS.particles.oscillationFactor },
     }),
     [],
   );
@@ -87,6 +94,9 @@ const Particles = ({ config }) => {
             uniform float uParticleActiveSize;
             uniform float uBlobScaleX;
             uniform float uBlobScaleY;
+            uniform float uParticleRotationSpeed;
+            uniform float uParticleRotationJitter;
+            uniform float uParticleOscillationFactor;
             varying vec2 vUv;
             varying float vSize;
             varying vec2 vPos;
@@ -190,7 +200,15 @@ const Particles = ({ config }) => {
                 
                 float dirLen = max(length(relToMouse), 0.0001);
                 vec2 dir = relToMouse / dirLen;
-                float jitter = sin(uTime * 0.8 + pos.x * 0.35 + pos.y * 0.35) * 0.08;
+                float oscPhase = aRandom * 6.28318530718;
+                float osc = 0.5 + 0.5 * sin(
+                  uTime * (0.25 + uParticleOscillationFactor * 0.35) + oscPhase
+                );
+                float speedScale = mix(0.55, 1.35, osc) * (0.8 + uParticleOscillationFactor * 0.2);
+                float jitterScale = mix(0.7, 1.45, osc) * (0.85 + uParticleOscillationFactor * 0.15);
+                float jitter = sin(
+                  uTime * uParticleRotationSpeed * speedScale + pos.x * 0.35 + pos.y * 0.35
+                ) * (uParticleRotationJitter * jitterScale);
                 vec2 perp = vec2(-dir.y, dir.x);
                 vec2 jitteredDir = normalize(dir + perp * jitter);
                 mat2 rot = mat2(jitteredDir.x, jitteredDir.y, -jitteredDir.y, jitteredDir.x);
@@ -252,6 +270,10 @@ const Particles = ({ config }) => {
     material.uniforms.uParticleActiveSize.value = merged.particles.activeSize;
     material.uniforms.uBlobScaleX.value = merged.particles.blobScaleX;
     material.uniforms.uBlobScaleY.value = merged.particles.blobScaleY;
+    material.uniforms.uParticleRotationSpeed.value = merged.particles.rotationSpeed;
+    material.uniforms.uParticleRotationJitter.value = merged.particles.rotationJitter;
+    material.uniforms.uParticleOscillationFactor.value =
+      merged.particles.oscillationFactor;
   }, [material, merged]);
 
   useEffect(() => {
@@ -331,8 +353,9 @@ const Particles = ({ config }) => {
         Math.min(viewport.width, viewport.height) * merged.cursor.radius;
       const jitterX = (Math.sin(t * 0.35) + Math.sin(t * 0.77 + 1.2)) * 0.5;
       const jitterY = (Math.cos(t * 0.31) + Math.sin(t * 0.63 + 2.4)) * 0.5;
-      targetX = baseX + jitterX * jitterRadius * merged.cursor.strength;
-      targetY = baseY + jitterY * jitterRadius * merged.cursor.strength;
+      const followStrength = merged.particles.cursorFollowStrength;
+      targetX = (baseX + jitterX * jitterRadius * merged.cursor.strength) * followStrength;
+      targetY = (baseY + jitterY * jitterRadius * merged.cursor.strength) * followStrength;
     }
 
     const current = material.uniforms.uMouse.value;

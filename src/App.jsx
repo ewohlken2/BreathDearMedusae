@@ -94,6 +94,22 @@ function App() {
             typeof storedParticles.blobScaleY === "number"
               ? storedParticles.blobScaleY
               : SETTINGS_CONFIG.defaults.particles.blobScaleY,
+          rotationSpeed:
+            typeof storedParticles.rotationSpeed === "number"
+              ? storedParticles.rotationSpeed
+              : SETTINGS_CONFIG.defaults.particles.rotationSpeed,
+          rotationJitter:
+            typeof storedParticles.rotationJitter === "number"
+              ? storedParticles.rotationJitter
+              : SETTINGS_CONFIG.defaults.particles.rotationJitter,
+          cursorFollowStrength:
+            typeof storedParticles.cursorFollowStrength === "number"
+              ? storedParticles.cursorFollowStrength
+              : SETTINGS_CONFIG.defaults.particles.cursorFollowStrength,
+          oscillationFactor:
+            typeof storedParticles.oscillationFactor === "number"
+              ? storedParticles.oscillationFactor
+              : SETTINGS_CONFIG.defaults.particles.oscillationFactor,
         },
       };
     } catch {
@@ -153,6 +169,18 @@ function App() {
   const [blobScaleY, setBlobScaleY] = useState(
     savedSettings.particles.blobScaleY,
   );
+  const [particleRotationSpeed, setParticleRotationSpeed] = useState(
+    savedSettings.particles.rotationSpeed,
+  );
+  const [particleRotationJitter, setParticleRotationJitter] = useState(
+    savedSettings.particles.rotationJitter,
+  );
+  const [particleCursorFollowStrength, setParticleCursorFollowStrength] = useState(
+    savedSettings.particles.cursorFollowStrength,
+  );
+  const [particleOscillationFactor, setParticleOscillationFactor] = useState(
+    savedSettings.particles.oscillationFactor,
+  );
   const [exportNotice, setExportNotice] = useState(false);
 
   const handleSave = () => {
@@ -181,6 +209,10 @@ function App() {
           activeSize: particleActiveSize,
           blobScaleX,
           blobScaleY,
+          rotationSpeed: particleRotationSpeed,
+          rotationJitter: particleRotationJitter,
+          cursorFollowStrength: particleCursorFollowStrength,
+          oscillationFactor: particleOscillationFactor,
         },
       }),
     );
@@ -207,6 +239,10 @@ function App() {
         activeSize: particleActiveSize,
         blobScaleX,
         blobScaleY,
+        rotationSpeed: particleRotationSpeed,
+        rotationJitter: particleRotationJitter,
+        cursorFollowStrength: particleCursorFollowStrength,
+        oscillationFactor: particleOscillationFactor,
       },
     });
   };
@@ -231,16 +267,26 @@ function App() {
     setParticleActiveSize(SETTINGS_CONFIG.defaults.particles.activeSize);
     setBlobScaleX(SETTINGS_CONFIG.defaults.particles.blobScaleX);
     setBlobScaleY(SETTINGS_CONFIG.defaults.particles.blobScaleY);
+    setParticleRotationSpeed(SETTINGS_CONFIG.defaults.particles.rotationSpeed);
+    setParticleRotationJitter(SETTINGS_CONFIG.defaults.particles.rotationJitter);
+    setParticleCursorFollowStrength(
+      SETTINGS_CONFIG.defaults.particles.cursorFollowStrength,
+    );
+    setParticleOscillationFactor(
+      SETTINGS_CONFIG.defaults.particles.oscillationFactor,
+    );
   };
 
   const handleExport = async () => {
     const payload = {
       cursor: {
+        ...SETTINGS_CONFIG.defaults.cursor,
         radius: cursorJitterRadius,
         strength: cursorJitterStrength,
         dragFactor: cursorDragFactor,
       },
       halo: {
+        ...SETTINGS_CONFIG.defaults.halo,
         outerOscFrequency,
         outerOscAmplitude,
         outerOscJitterStrength,
@@ -253,10 +299,15 @@ function App() {
         outerEndOffset: haloOuterEndOffset,
       },
       particles: {
+        ...SETTINGS_CONFIG.defaults.particles,
         baseSize: particleBaseSize,
         activeSize: particleActiveSize,
         blobScaleX,
         blobScaleY,
+        rotationSpeed: particleRotationSpeed,
+        rotationJitter: particleRotationJitter,
+        cursorFollowStrength: particleCursorFollowStrength,
+        oscillationFactor: particleOscillationFactor,
       },
     };
 
@@ -283,6 +334,10 @@ function App() {
     activeSize: ${payload.particles.activeSize},
     blobScaleX: ${payload.particles.blobScaleX},
     blobScaleY: ${payload.particles.blobScaleY},
+    rotationSpeed: ${payload.particles.rotationSpeed},
+    rotationJitter: ${payload.particles.rotationJitter},
+    cursorFollowStrength: ${payload.particles.cursorFollowStrength},
+    oscillationFactor: ${payload.particles.oscillationFactor},
   },
 }`;
 
@@ -313,7 +368,11 @@ function App() {
     particleBaseSize !== savedSettings.particles.baseSize ||
     particleActiveSize !== savedSettings.particles.activeSize ||
     blobScaleX !== savedSettings.particles.blobScaleX ||
-    blobScaleY !== savedSettings.particles.blobScaleY;
+    blobScaleY !== savedSettings.particles.blobScaleY ||
+    particleRotationSpeed !== savedSettings.particles.rotationSpeed ||
+    particleRotationJitter !== savedSettings.particles.rotationJitter ||
+    particleCursorFollowStrength !== savedSettings.particles.cursorFollowStrength ||
+    particleOscillationFactor !== savedSettings.particles.oscillationFactor;
 
   return (
     <div className="app">
@@ -335,6 +394,10 @@ function App() {
         particleActiveSize={particleActiveSize}
         blobScaleX={blobScaleX}
         blobScaleY={blobScaleY}
+        particleRotationSpeed={particleRotationSpeed}
+        particleRotationJitter={particleRotationJitter}
+        particleCursorFollowStrength={particleCursorFollowStrength}
+        particleOscillationFactor={particleOscillationFactor}
         onRadiusChange={setCursorJitterRadius}
         onStrengthChange={setCursorJitterStrength}
         onDragFactorChange={setCursorDragFactor}
@@ -352,6 +415,10 @@ function App() {
         onParticleActiveSizeChange={setParticleActiveSize}
         onBlobScaleXChange={setBlobScaleX}
         onBlobScaleYChange={setBlobScaleY}
+        onParticleRotationSpeedChange={setParticleRotationSpeed}
+        onParticleRotationJitterChange={setParticleRotationJitter}
+        onParticleCursorFollowStrengthChange={setParticleCursorFollowStrength}
+        onParticleOscillationFactorChange={setParticleOscillationFactor}
         onSave={handleSave}
         onReset={handleReset}
         onExport={handleExport}
@@ -382,6 +449,10 @@ function App() {
             activeSize: particleActiveSize,
             blobScaleX,
             blobScaleY,
+            rotationSpeed: particleRotationSpeed,
+            rotationJitter: particleRotationJitter,
+            cursorFollowStrength: particleCursorFollowStrength,
+            oscillationFactor: particleOscillationFactor,
           },
         }}
       />

@@ -7,3 +7,11 @@ test("halo defaults include outer oscillation jitter controls", () => {
   assert.equal(typeof halo.outerOscJitterStrength, "number");
   assert.equal(typeof halo.outerOscJitterSpeed, "number");
 });
+
+test("particle defaults include rotation and cursor follow controls", () => {
+  const particles = SETTINGS_CONFIG.defaults.particles;
+  assert.equal(typeof particles.rotationSpeed, "number");
+  assert.equal(typeof particles.rotationJitter, "number");
+  assert.equal(typeof particles.cursorFollowStrength, "number");
+  assert.equal(typeof particles.oscillationFactor, "number");
+});

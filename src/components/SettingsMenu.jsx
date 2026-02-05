@@ -18,6 +18,10 @@ const SettingsMenu = ({
   particleActiveSize,
   blobScaleX,
   blobScaleY,
+  particleRotationSpeed,
+  particleRotationJitter,
+  particleCursorFollowStrength,
+  particleOscillationFactor,
   onRadiusChange,
   onStrengthChange,
   onDragFactorChange,
@@ -35,6 +39,10 @@ const SettingsMenu = ({
   onParticleActiveSizeChange,
   onBlobScaleXChange,
   onBlobScaleYChange,
+  onParticleRotationSpeedChange,
+  onParticleRotationJitterChange,
+  onParticleCursorFollowStrengthChange,
+  onParticleOscillationFactorChange,
   onSave,
   onReset,
   onExport,
@@ -215,6 +223,50 @@ const SettingsMenu = ({
                 step="0.01"
                 value={blobScaleY}
                 onChange={(event) => onBlobScaleYChange(Number(event.target.value))}
+              />
+            </label>
+            <label className="settings-row">
+              <span>Rotation Speed</span>
+              <input
+                type="number"
+                step="0.05"
+                value={particleRotationSpeed}
+                onChange={(event) =>
+                  onParticleRotationSpeedChange(Number(event.target.value))
+                }
+              />
+            </label>
+            <label className="settings-row">
+              <span>Rotation Jitter</span>
+              <input
+                type="number"
+                step="0.01"
+                value={particleRotationJitter}
+                onChange={(event) =>
+                  onParticleRotationJitterChange(Number(event.target.value))
+                }
+              />
+            </label>
+            <label className="settings-row">
+              <span>Cursor Follow Strength</span>
+              <input
+                type="number"
+                step="0.05"
+                value={particleCursorFollowStrength}
+                onChange={(event) =>
+                  onParticleCursorFollowStrengthChange(Number(event.target.value))
+                }
+              />
+            </label>
+            <label className="settings-row">
+              <span>Oscillation Factor</span>
+              <input
+                type="number"
+                step="0.05"
+                value={particleOscillationFactor}
+                onChange={(event) =>
+                  onParticleOscillationFactorChange(Number(event.target.value))
+                }
               />
             </label>
           </details>

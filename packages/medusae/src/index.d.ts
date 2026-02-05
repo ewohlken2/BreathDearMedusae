@@ -21,6 +21,10 @@ export interface MedusaeConfig {
     activeSize?: number;
     blobScaleX?: number;
     blobScaleY?: number;
+    rotationSpeed?: number;
+    rotationJitter?: number;
+    cursorFollowStrength?: number;
+    oscillationFactor?: number;
   };
 }
 
