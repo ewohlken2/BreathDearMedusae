@@ -1,18 +1,24 @@
-# @breathdear/medusae
+# @vibe-rational/medusae
 
 An organic, breathing medusa particle engine built with React Three Fiber.
+
+## Demo
+
+```text
+https://breath-dear-medusae.vercel.app/
+```
 
 ## Install
 
 ```bash
-pnpm add @breathdear/medusae
+pnpm add @vibe-rational/medusae
 ```
 
 ## Usage
 
 ```jsx
-import { Medusae } from "@breathdear/medusae";
-import "@breathdear/medusae/style.css";
+import { Medusae } from "@vibe-rational/medusae";
+import "@vibe-rational/medusae/style.css";
 
 export default function Hero() {
   return <Medusae />;
