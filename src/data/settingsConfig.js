@@ -9,8 +9,8 @@ const SETTINGS_CONFIG = {
         halo: {
             outerOscFrequency: 2.6,
             outerOscAmplitude: 0.76,
-            outerOscJitterStrength: 0.25,
-            outerOscJitterSpeed: 0.6,
+            outerOscJitterStrength: 0.025,
+            outerOscJitterSpeed: 0.3,
             radiusBase: 2.2,
             radiusAmplitude: 0.5,
             shapeAmplitude: 0.75,

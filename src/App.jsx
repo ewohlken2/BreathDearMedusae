@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
 import SETTINGS_CONFIG from "./data/settingsConfig";
 import SettingsMenu from "./components/SettingsMenu";
 import { Medusae } from "../packages/medusae/src";
@@ -104,9 +104,15 @@ function App() {
       };
     }
   });
-  const [cursorJitterRadius, setCursorJitterRadius] = useState(savedSettings.cursor.radius);
-  const [cursorJitterStrength, setCursorJitterStrength] = useState(savedSettings.cursor.strength);
-  const [cursorDragFactor, setCursorDragFactor] = useState(savedSettings.cursor.dragFactor);
+  const [cursorJitterRadius, setCursorJitterRadius] = useState(
+    savedSettings.cursor.radius,
+  );
+  const [cursorJitterStrength, setCursorJitterStrength] = useState(
+    savedSettings.cursor.strength,
+  );
+  const [cursorDragFactor, setCursorDragFactor] = useState(
+    savedSettings.cursor.dragFactor,
+  );
   const [outerOscFrequency, setOuterOscFrequency] = useState(
     savedSettings.halo.outerOscFrequency,
   );
@@ -119,18 +125,34 @@ function App() {
   const [outerOscJitterSpeed, setOuterOscJitterSpeed] = useState(
     savedSettings.halo.outerOscJitterSpeed,
   );
-  const [haloRadiusBase, setHaloRadiusBase] = useState(savedSettings.halo.radiusBase);
-  const [haloRadiusAmplitude, setHaloRadiusAmplitude] = useState(savedSettings.halo.radiusAmplitude);
-  const [haloShapeAmplitude, setHaloShapeAmplitude] = useState(savedSettings.halo.shapeAmplitude);
+  const [haloRadiusBase, setHaloRadiusBase] = useState(
+    savedSettings.halo.radiusBase,
+  );
+  const [haloRadiusAmplitude, setHaloRadiusAmplitude] = useState(
+    savedSettings.halo.radiusAmplitude,
+  );
+  const [haloShapeAmplitude, setHaloShapeAmplitude] = useState(
+    savedSettings.halo.shapeAmplitude,
+  );
   const [haloRimWidth, setHaloRimWidth] = useState(savedSettings.halo.rimWidth);
   const [haloOuterStartOffset, setHaloOuterStartOffset] = useState(
     savedSettings.halo.outerStartOffset,
   );
-  const [haloOuterEndOffset, setHaloOuterEndOffset] = useState(savedSettings.halo.outerEndOffset);
-  const [particleBaseSize, setParticleBaseSize] = useState(savedSettings.particles.baseSize);
-  const [particleActiveSize, setParticleActiveSize] = useState(savedSettings.particles.activeSize);
-  const [blobScaleX, setBlobScaleX] = useState(savedSettings.particles.blobScaleX);
-  const [blobScaleY, setBlobScaleY] = useState(savedSettings.particles.blobScaleY);
+  const [haloOuterEndOffset, setHaloOuterEndOffset] = useState(
+    savedSettings.halo.outerEndOffset,
+  );
+  const [particleBaseSize, setParticleBaseSize] = useState(
+    savedSettings.particles.baseSize,
+  );
+  const [particleActiveSize, setParticleActiveSize] = useState(
+    savedSettings.particles.activeSize,
+  );
+  const [blobScaleX, setBlobScaleX] = useState(
+    savedSettings.particles.blobScaleX,
+  );
+  const [blobScaleY, setBlobScaleY] = useState(
+    savedSettings.particles.blobScaleY,
+  );
   const [exportNotice, setExportNotice] = useState(false);
 
   const handleSave = () => {
@@ -160,7 +182,7 @@ function App() {
           blobScaleX,
           blobScaleY,
         },
-      })
+      }),
     );
     setSavedSettings({
       cursor: {
@@ -195,7 +217,9 @@ function App() {
     setCursorDragFactor(SETTINGS_CONFIG.defaults.cursor.dragFactor);
     setOuterOscFrequency(SETTINGS_CONFIG.defaults.halo.outerOscFrequency);
     setOuterOscAmplitude(SETTINGS_CONFIG.defaults.halo.outerOscAmplitude);
-    setOuterOscJitterStrength(SETTINGS_CONFIG.defaults.halo.outerOscJitterStrength);
+    setOuterOscJitterStrength(
+      SETTINGS_CONFIG.defaults.halo.outerOscJitterStrength,
+    );
     setOuterOscJitterSpeed(SETTINGS_CONFIG.defaults.halo.outerOscJitterSpeed);
     setHaloRadiusBase(SETTINGS_CONFIG.defaults.halo.radiusBase);
     setHaloRadiusAmplitude(SETTINGS_CONFIG.defaults.halo.radiusAmplitude);
