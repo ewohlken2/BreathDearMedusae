@@ -19,6 +19,8 @@ const DEFAULTS = {
     rimWidth: 1.8,
     outerStartOffset: 0.4,
     outerEndOffset: 2.2,
+    scaleX: 1,
+    scaleY: 1,
   },
   particles: {
     baseSize: 0.012,
@@ -64,6 +66,8 @@ const Particles = ({ config }) => {
       uHaloRimWidth: { value: DEFAULTS.halo.rimWidth },
       uHaloOuterStartOffset: { value: DEFAULTS.halo.outerStartOffset },
       uHaloOuterEndOffset: { value: DEFAULTS.halo.outerEndOffset },
+      uHaloScaleX: { value: DEFAULTS.halo.scaleX },
+      uHaloScaleY: { value: DEFAULTS.halo.scaleY },
       uParticleBaseSize: { value: DEFAULTS.particles.baseSize },
       uParticleActiveSize: { value: DEFAULTS.particles.activeSize },
       uBlobScaleX: { value: DEFAULTS.particles.blobScaleX },
@@ -90,6 +94,8 @@ const Particles = ({ config }) => {
             uniform float uHaloRimWidth;
             uniform float uHaloOuterStartOffset;
             uniform float uHaloOuterEndOffset;
+            uniform float uHaloScaleX;
+            uniform float uHaloScaleY;
             uniform float uParticleBaseSize;
             uniform float uParticleActiveSize;
             uniform float uBlobScaleX;
@@ -146,7 +152,8 @@ const Particles = ({ config }) => {
                 // --- 2. THE JELLYFISH HALO (Smooth & Subtle) ---
                 
                 vec2 relToMouse = pos.xy - uMouse;
-                float distFromMouse = length(relToMouse);
+                vec2 haloScale = max(vec2(uHaloScaleX, uHaloScaleY), vec2(0.0001));
+                float distFromMouse = length(relToMouse / haloScale);
                 float angleToMouse = atan(relToMouse.y, relToMouse.x);
                 vec2 dirToMouse = normalize(relToMouse + vec2(0.0001, 0.0));
                 
@@ -266,6 +273,8 @@ const Particles = ({ config }) => {
     material.uniforms.uHaloRimWidth.value = merged.halo.rimWidth;
     material.uniforms.uHaloOuterStartOffset.value = merged.halo.outerStartOffset;
     material.uniforms.uHaloOuterEndOffset.value = merged.halo.outerEndOffset;
+    material.uniforms.uHaloScaleX.value = merged.halo.scaleX;
+    material.uniforms.uHaloScaleY.value = merged.halo.scaleY;
     material.uniforms.uParticleBaseSize.value = merged.particles.baseSize;
     material.uniforms.uParticleActiveSize.value = merged.particles.activeSize;
     material.uniforms.uBlobScaleX.value = merged.particles.blobScaleX;

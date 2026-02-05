@@ -15,6 +15,8 @@ export interface MedusaeConfig {
     rimWidth?: number;
     outerStartOffset?: number;
     outerEndOffset?: number;
+    scaleX?: number;
+    scaleY?: number;
   };
   particles?: {
     baseSize?: number;

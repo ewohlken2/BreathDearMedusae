@@ -76,6 +76,14 @@ function App() {
             typeof storedHalo.outerEndOffset === "number"
               ? storedHalo.outerEndOffset
               : SETTINGS_CONFIG.defaults.halo.outerEndOffset,
+          scaleX:
+            typeof storedHalo.scaleX === "number"
+              ? storedHalo.scaleX
+              : SETTINGS_CONFIG.defaults.halo.scaleX,
+          scaleY:
+            typeof storedHalo.scaleY === "number"
+              ? storedHalo.scaleY
+              : SETTINGS_CONFIG.defaults.halo.scaleY,
         },
         particles: {
           baseSize:
@@ -157,6 +165,8 @@ function App() {
   const [haloOuterEndOffset, setHaloOuterEndOffset] = useState(
     savedSettings.halo.outerEndOffset,
   );
+  const [haloScaleX, setHaloScaleX] = useState(savedSettings.halo.scaleX);
+  const [haloScaleY, setHaloScaleY] = useState(savedSettings.halo.scaleY);
   const [particleBaseSize, setParticleBaseSize] = useState(
     savedSettings.particles.baseSize,
   );
@@ -203,6 +213,8 @@ function App() {
           rimWidth: haloRimWidth,
           outerStartOffset: haloOuterStartOffset,
           outerEndOffset: haloOuterEndOffset,
+          scaleX: haloScaleX,
+          scaleY: haloScaleY,
         },
         particles: {
           baseSize: particleBaseSize,
@@ -233,6 +245,8 @@ function App() {
         rimWidth: haloRimWidth,
         outerStartOffset: haloOuterStartOffset,
         outerEndOffset: haloOuterEndOffset,
+        scaleX: haloScaleX,
+        scaleY: haloScaleY,
       },
       particles: {
         baseSize: particleBaseSize,
@@ -263,6 +277,8 @@ function App() {
     setHaloRimWidth(SETTINGS_CONFIG.defaults.halo.rimWidth);
     setHaloOuterStartOffset(SETTINGS_CONFIG.defaults.halo.outerStartOffset);
     setHaloOuterEndOffset(SETTINGS_CONFIG.defaults.halo.outerEndOffset);
+    setHaloScaleX(SETTINGS_CONFIG.defaults.halo.scaleX);
+    setHaloScaleY(SETTINGS_CONFIG.defaults.halo.scaleY);
     setParticleBaseSize(SETTINGS_CONFIG.defaults.particles.baseSize);
     setParticleActiveSize(SETTINGS_CONFIG.defaults.particles.activeSize);
     setBlobScaleX(SETTINGS_CONFIG.defaults.particles.blobScaleX);
@@ -297,6 +313,8 @@ function App() {
         rimWidth: haloRimWidth,
         outerStartOffset: haloOuterStartOffset,
         outerEndOffset: haloOuterEndOffset,
+        scaleX: haloScaleX,
+        scaleY: haloScaleY,
       },
       particles: {
         ...SETTINGS_CONFIG.defaults.particles,
@@ -328,6 +346,8 @@ function App() {
     rimWidth: ${payload.halo.rimWidth},
     outerStartOffset: ${payload.halo.outerStartOffset},
     outerEndOffset: ${payload.halo.outerEndOffset},
+    scaleX: ${payload.halo.scaleX},
+    scaleY: ${payload.halo.scaleY},
   },
   particles: {
     baseSize: ${payload.particles.baseSize},
@@ -365,6 +385,8 @@ function App() {
     haloRimWidth !== savedSettings.halo.rimWidth ||
     haloOuterStartOffset !== savedSettings.halo.outerStartOffset ||
     haloOuterEndOffset !== savedSettings.halo.outerEndOffset ||
+    haloScaleX !== savedSettings.halo.scaleX ||
+    haloScaleY !== savedSettings.halo.scaleY ||
     particleBaseSize !== savedSettings.particles.baseSize ||
     particleActiveSize !== savedSettings.particles.activeSize ||
     blobScaleX !== savedSettings.particles.blobScaleX ||
@@ -390,6 +412,8 @@ function App() {
         haloRimWidth={haloRimWidth}
         haloOuterStartOffset={haloOuterStartOffset}
         haloOuterEndOffset={haloOuterEndOffset}
+        haloScaleX={haloScaleX}
+        haloScaleY={haloScaleY}
         particleBaseSize={particleBaseSize}
         particleActiveSize={particleActiveSize}
         blobScaleX={blobScaleX}
@@ -411,6 +435,8 @@ function App() {
         onHaloRimWidthChange={setHaloRimWidth}
         onHaloOuterStartOffsetChange={setHaloOuterStartOffset}
         onHaloOuterEndOffsetChange={setHaloOuterEndOffset}
+        onHaloScaleXChange={setHaloScaleX}
+        onHaloScaleYChange={setHaloScaleY}
         onParticleBaseSizeChange={setParticleBaseSize}
         onParticleActiveSizeChange={setParticleActiveSize}
         onBlobScaleXChange={setBlobScaleX}
@@ -443,6 +469,8 @@ function App() {
             rimWidth: haloRimWidth,
             outerStartOffset: haloOuterStartOffset,
             outerEndOffset: haloOuterEndOffset,
+            scaleX: haloScaleX,
+            scaleY: haloScaleY,
           },
           particles: {
             baseSize: particleBaseSize,

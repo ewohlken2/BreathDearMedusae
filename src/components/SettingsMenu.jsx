@@ -14,6 +14,8 @@ const SettingsMenu = ({
   haloRimWidth,
   haloOuterStartOffset,
   haloOuterEndOffset,
+  haloScaleX,
+  haloScaleY,
   particleBaseSize,
   particleActiveSize,
   blobScaleX,
@@ -35,6 +37,8 @@ const SettingsMenu = ({
   onHaloRimWidthChange,
   onHaloOuterStartOffsetChange,
   onHaloOuterEndOffsetChange,
+  onHaloScaleXChange,
+  onHaloScaleYChange,
   onParticleBaseSizeChange,
   onParticleActiveSizeChange,
   onBlobScaleXChange,
@@ -184,6 +188,24 @@ const SettingsMenu = ({
                 step="0.01"
                 value={haloOuterEndOffset}
                 onChange={(event) => onHaloOuterEndOffsetChange(Number(event.target.value))}
+              />
+            </label>
+            <label className="settings-row">
+              <span>Halo Width</span>
+              <input
+                type="number"
+                step="0.01"
+                value={haloScaleX}
+                onChange={(event) => onHaloScaleXChange(Number(event.target.value))}
+              />
+            </label>
+            <label className="settings-row">
+              <span>Halo Height</span>
+              <input
+                type="number"
+                step="0.01"
+                value={haloScaleY}
+                onChange={(event) => onHaloScaleYChange(Number(event.target.value))}
               />
             </label>
           </details>
