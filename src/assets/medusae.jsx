@@ -380,22 +380,23 @@ const Particles = ({
     let targetY = null;
 
     // Only follow pointer if mouse is on screen
-        if (hovering.current) {
-            const baseX = (pointer.x * viewport.width) / 2;
-            const baseY = (pointer.y * viewport.height) / 2;
-            const t = clock.getElapsedTime();
-            const jitterRadius = Math.min(viewport.width, viewport.height) * cursorJitterRadius;
-            const jitterX = (Math.sin(t * 0.35) + Math.sin(t * 0.77 + 1.2)) * 0.5;
-            const jitterY = (Math.cos(t * 0.31) + Math.sin(t * 0.63 + 2.4)) * 0.5;
-            targetX = baseX + jitterX * jitterRadius * cursorJitterStrength;
-            targetY = baseY + jitterY * jitterRadius * cursorJitterStrength;
-        }
+    if (hovering.current) {
+      const baseX = (pointer.x * viewport.width) / 2;
+      const baseY = (pointer.y * viewport.height) / 2;
+      const t = clock.getElapsedTime();
+      const jitterRadius =
+        Math.min(viewport.width, viewport.height) * cursorJitterRadius;
+      const jitterX = (Math.sin(t * 0.35) + Math.sin(t * 0.77 + 1.2)) * 0.5;
+      const jitterY = (Math.cos(t * 0.31) + Math.sin(t * 0.63 + 2.4)) * 0.5;
+      targetX = baseX + jitterX * jitterRadius * cursorJitterStrength;
+      targetY = baseY + jitterY * jitterRadius * cursorJitterStrength;
+    }
 
     // Current: Center of Gravity
     const current = material.uniforms.uMouse.value;
 
     // "Heavy" Drag: Reduced to 0.015 for more weight
-        const dragFactor = cursorDragFactor;
+    const dragFactor = cursorDragFactor;
 
     // If it's the very first frame or mouse just entered, we might want to snap
     // but for now, initializing to 0,0 already makes it appear instantly at center.
