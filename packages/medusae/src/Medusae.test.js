@@ -39,3 +39,11 @@ test("medusae background uses configurable color", () => {
   assert.ok(contents.includes("attach=\"background\""));
   assert.ok(contents.includes("background.color"));
 });
+
+test("medusae listens for global pointer movement", () => {
+  const filePath = path.join(process.cwd(), "packages/medusae/src/Medusae.jsx");
+  const contents = fs.readFileSync(filePath, "utf8");
+  assert.ok(contents.includes("pointermove"));
+  assert.ok(contents.includes("addEventListener"));
+  assert.ok(contents.includes("window"));
+});

@@ -325,6 +325,7 @@ const Particles = ({ config }) => {
   }, [count, countX, countY]);
 
   const hovering = useRef(true);
+  const globalPointer = useRef(null);
 
   useEffect(() => {
     const handleLeave = () => (hovering.current = false);
@@ -339,6 +340,20 @@ const Particles = ({ config }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const handlePointerMove = (event) => {
+      const x = (event.clientX / window.innerWidth) * 2 - 1;
+      const y = -(event.clientY / window.innerHeight) * 2 + 1;
+      globalPointer.current = { x, y };
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+    };
+  }, []);
+
   useFrame((state) => {
     const { clock, pointer } = state;
     material.uniforms.uTime.value = clock.getElapsedTime();
@@ -347,8 +362,9 @@ const Particles = ({ config }) => {
     let targetY = null;
 
     if (hovering.current) {
-      const baseX = (pointer.x * viewport.width) / 2;
-      const baseY = (pointer.y * viewport.height) / 2;
+      const pointerSource = globalPointer.current ?? pointer;
+      const baseX = (pointerSource.x * viewport.width) / 2;
+      const baseY = (pointerSource.y * viewport.height) / 2;
       const t = clock.getElapsedTime();
       const jitterRadius =
         Math.min(viewport.width, viewport.height) * merged.cursor.radius;
