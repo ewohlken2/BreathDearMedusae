@@ -213,6 +213,10 @@ const Particles = ({ config }) => {
         `,
         fragmentShader: `
             uniform float uTime;
+            uniform vec3 uParticleColorBase;
+            uniform vec3 uParticleColorBlue;
+            uniform vec3 uParticleColorRed;
+            uniform vec3 uParticleColorYellow;
             varying vec2 vUv;
             varying float vSize;
             varying vec2 vPos;
