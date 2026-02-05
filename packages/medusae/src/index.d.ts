@@ -32,6 +32,9 @@ export interface MedusaeConfig {
     colorTwo?: string;
     colorThree?: string;
   };
+  background?: {
+    color?: string;
+  };
 }
 
 export interface MedusaeProps {

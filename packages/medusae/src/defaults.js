@@ -32,6 +32,9 @@ const MEDUSAE_DEFAULTS = {
     colorTwo: "#eb4236",
     colorThree: "#faba03",
   },
+  background: {
+    color: "#ffffff",
+  },
 };
 
 export default MEDUSAE_DEFAULTS;

@@ -67,7 +67,7 @@ function App() {
   const hasDirtyChanges = !areSettingsEqual(settings, savedSettings);
 
   return (
-    <div className="app">
+    <div className="app" style={{ backgroundColor: settings.background.color }}>
       <SettingsMenu
         settings={settings}
         schema={SETTINGS_CONFIG.settingsSchema}

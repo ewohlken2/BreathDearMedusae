@@ -2,7 +2,12 @@ import MEDUSAE_DEFAULTS from "../../packages/medusae/src/defaults.js";
 
 const SETTINGS_CONFIG = {
     storageKey: "cursorJitterSettings",
-    defaults: MEDUSAE_DEFAULTS,
+    defaults: {
+        ...MEDUSAE_DEFAULTS,
+        background: {
+            color: "#ffffff",
+        },
+    },
     settingsSchema: [
         {
             id: "cursor",
@@ -56,6 +61,11 @@ const SETTINGS_CONFIG = {
                 },
                 { path: "particles.oscillationFactor", label: "Oscillation Factor", step: 0.05 },
             ],
+        },
+        {
+            id: "background",
+            label: "Background",
+            fields: [{ path: "background.color", label: "Page Color", type: "color" }],
         },
     ],
 };

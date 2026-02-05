@@ -15,3 +15,8 @@ test("particle defaults include color palette strings", () => {
   assert.equal(typeof particles.colorTwo, "string");
   assert.equal(typeof particles.colorThree, "string");
 });
+
+test("background defaults include color string", () => {
+  const background = MEDUSAE_DEFAULTS.background;
+  assert.equal(typeof background.color, "string");
+});

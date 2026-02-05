@@ -20,7 +20,7 @@ export const mergeSettingsWithDefaults = (input = {}) =>
   deepMerge(SETTINGS_CONFIG.defaults, input);
 
 export const exportSettingsText = (settings) => {
-  const sections = ["cursor", "halo", "particles"];
+  const sections = ["cursor", "halo", "particles", "background"];
   const lines = ["{"];
   sections.forEach((section) => {
     lines.push(`  ${section}: {`);

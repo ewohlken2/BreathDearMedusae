@@ -9,6 +9,7 @@ const mergeConfig = (config) => ({
   cursor: { ...MEDUSAE_DEFAULTS.cursor, ...(config?.cursor ?? {}) },
   halo: { ...MEDUSAE_DEFAULTS.halo, ...(config?.halo ?? {}) },
   particles: { ...MEDUSAE_DEFAULTS.particles, ...(config?.particles ?? {}) },
+  background: { ...MEDUSAE_DEFAULTS.background, ...(config?.background ?? {}) },
 });
 
 const Particles = ({ config }) => {
@@ -371,10 +372,15 @@ const Particles = ({ config }) => {
 };
 
 const Medusae = ({ className, config, style }) => {
+  const merged = useMemo(() => mergeConfig(config), [config]);
+
   return (
-    <div className={className ? `medusae-root ${className}` : "medusae-root"} style={style}>
+    <div
+      className={className ? `medusae-root ${className}` : "medusae-root"}
+      style={style}
+    >
       <Canvas className="medusae-canvas" camera={{ position: [0, 0, 5] }}>
-        <color attach="background" args={["#ffffff"]} />
+        <color attach="background" args={[merged.background.color]} />
         <Particles config={config} />
       </Canvas>
     </div>

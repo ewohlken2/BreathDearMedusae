@@ -1,6 +1,6 @@
 {
     "name": "@vibe-rational/medusae",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "description": "An organic, breathing medusa particle effect built with React Three Fiber. Inspired by Antigravity landing page.",
     "keywords": [
         "react",

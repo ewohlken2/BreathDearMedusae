@@ -31,3 +31,11 @@ test("fragment shader declares particle color uniforms", () => {
   assert.ok(fragmentSource.includes("uniform vec3 uParticleColorTwo;"));
   assert.ok(fragmentSource.includes("uniform vec3 uParticleColorThree;"));
 });
+
+test("medusae background uses configurable color", () => {
+  const filePath = path.join(process.cwd(), "packages/medusae/src/Medusae.jsx");
+  const contents = fs.readFileSync(filePath, "utf8");
+  assert.ok(contents.includes("background"));
+  assert.ok(contents.includes("attach=\"background\""));
+  assert.ok(contents.includes("background.color"));
+});
