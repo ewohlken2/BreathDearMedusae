@@ -83,6 +83,7 @@
 }
 
 .settings-color-popover {
+  z-index: 4;
   padding: 10px;
   border-radius: 12px;
   border: 1px solid rgba(20, 20, 20, 0.12);

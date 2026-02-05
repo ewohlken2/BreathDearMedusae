@@ -1,5 +1,8 @@
 # Repository Guidelines
 
+## Package Manager Preference
+- This project prefers `pnpm` for all dependency management and scripts.
+
 ## Project Structure & Module Organization
 - `src/` contains the React app entry (`main.jsx`), top-level UI (`App.jsx`), and styles (`index.css`, `App.css`).
 - `src/assets/` holds rendering-related modules (for example `medusae.jsx`) and static assets.
