@@ -8,6 +8,8 @@ const Particles = ({
   cursorDragFactor = 0.055,
   outerOscFrequency = 2.6,
   outerOscAmplitude = 0.56,
+  outerOscJitterStrength = 0.25,
+  outerOscJitterSpeed = 0.6,
   haloRadiusBase = 2.2,
   haloRadiusAmplitude = 0.3,
   haloShapeAmplitude = 0.5,
@@ -39,6 +41,8 @@ const Particles = ({
       },
       uOuterOscFrequency: { value: outerOscFrequency },
       uOuterOscAmplitude: { value: outerOscAmplitude },
+      uOuterOscJitterStrength: { value: outerOscJitterStrength },
+      uOuterOscJitterSpeed: { value: outerOscJitterSpeed },
       uHaloRadiusBase: { value: haloRadiusBase },
       uHaloRadiusAmplitude: { value: haloRadiusAmplitude },
       uHaloShapeAmplitude: { value: haloShapeAmplitude },
@@ -53,6 +57,8 @@ const Particles = ({
     [
       outerOscFrequency,
       outerOscAmplitude,
+      outerOscJitterStrength,
+      outerOscJitterSpeed,
       haloRadiusBase,
       haloRadiusAmplitude,
       haloShapeAmplitude,
@@ -77,6 +83,8 @@ const Particles = ({
             uniform vec2 uMouse;
             uniform float uOuterOscFrequency;
             uniform float uOuterOscAmplitude;
+            uniform float uOuterOscJitterStrength;
+            uniform float uOuterOscJitterSpeed;
             uniform float uHaloRadiusBase;
             uniform float uHaloRadiusAmplitude;
             uniform float uHaloShapeAmplitude;
@@ -188,8 +196,13 @@ const Particles = ({
                 // --- 3.5 OUTER OSCILLATION (Smooth, Faster) ---
                 // Faster motion outside the halo, but eased in smoothly.
                 float outerInfluence = smoothstep(baseRadius + outerStartOffset, baseRadius + outerEndOffset, dist);
-                float outerOsc = sin(uTime * uOuterOscFrequency + pos.x * 0.6 + pos.y * 0.6);
-                pos.xy += normalize(relToMouse + vec2(0.0001, 0.0)) * outerOsc * uOuterOscAmplitude * outerInfluence;
+                float breath = sin(uTime * uOuterOscJitterSpeed);
+                float breath01 = breath * 0.5 + 0.5;
+                float breathShaped = smoothstep(0.0, 1.0, breath01);
+                float noiseTerm = (noise(vec2(uTime * 0.12, pos.x * 0.07)) - 0.5) * 0.2;
+                float mod = mix(1.0, 0.6 + breathShaped * 0.8 + noiseTerm, uOuterOscJitterStrength);
+                float outerOsc = sin(uTime * uOuterOscFrequency * mod + pos.x * 0.6 + pos.y * 0.6);
+                pos.xy += normalize(relToMouse + vec2(0.0001, 0.0)) * outerOsc * (uOuterOscAmplitude * mod) * outerInfluence;
 
                 // --- 4. SIZE & SCALE ---
                 

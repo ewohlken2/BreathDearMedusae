@@ -342,6 +342,8 @@ function App() {
           cursorDragFactor={cursorDragFactor}
           outerOscFrequency={outerOscFrequency}
           outerOscAmplitude={outerOscAmplitude}
+          outerOscJitterStrength={outerOscJitterStrength}
+          outerOscJitterSpeed={outerOscJitterSpeed}
           haloRadiusBase={haloRadiusBase}
           haloRadiusAmplitude={haloRadiusAmplitude}
           haloShapeAmplitude={haloShapeAmplitude}
