@@ -34,3 +34,7 @@ Use PNPM for all commands:
 ## Configuration Tips
 - Vite handles dev/build workflows.
 - Rendering is driven by Three.js + React Three Fiber; keep shader/scene logic under `src/assets/`.
+
+## Simplification Notes
+- Settings UI is schema-driven via `src/data/settingsConfig.js` (`settingsSchema`).
+- Shared defaults live in `packages/medusae/src/defaults.js` and are consumed by both app and renderer.
