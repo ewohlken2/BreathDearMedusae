@@ -299,6 +299,8 @@ function App() {
         dragFactor={cursorDragFactor}
         outerOscFrequency={outerOscFrequency}
         outerOscAmplitude={outerOscAmplitude}
+        outerOscJitterStrength={outerOscJitterStrength}
+        outerOscJitterSpeed={outerOscJitterSpeed}
         haloRadiusBase={haloRadiusBase}
         haloRadiusAmplitude={haloRadiusAmplitude}
         haloShapeAmplitude={haloShapeAmplitude}
@@ -314,6 +316,8 @@ function App() {
         onDragFactorChange={setCursorDragFactor}
         onOuterOscFrequencyChange={setOuterOscFrequency}
         onOuterOscAmplitudeChange={setOuterOscAmplitude}
+        onOuterOscJitterStrengthChange={setOuterOscJitterStrength}
+        onOuterOscJitterSpeedChange={setOuterOscJitterSpeed}
         onHaloRadiusBaseChange={setHaloRadiusBase}
         onHaloRadiusAmplitudeChange={setHaloRadiusAmplitude}
         onHaloShapeAmplitudeChange={setHaloShapeAmplitude}
