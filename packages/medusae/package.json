@@ -5,9 +5,16 @@
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
+  "types": "src/index.d.ts",
   "style": "dist/style.css",
+  "files": [
+    "dist",
+    "src/index.d.ts",
+    "src/medusae.css"
+  ],
   "exports": {
     ".": {
+      "types": "./src/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
@@ -24,6 +31,8 @@
     "vite": "^7.2.4"
   },
   "scripts": {
-    "build": "vite build"
+    "build": "vite build",
+    "prepublishOnly": "pnpm build",
+    "publish": "npm publish --access public"
   }
 }
