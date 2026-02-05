@@ -1,0 +1,13 @@
+# Particle Color Settings Design
+
+## Architecture and Data Flow
+
+We will extend the existing settings schema to include four configurable particle colors and keep the configuration flow consistent with the current numeric controls. Defaults will live in `packages/medusae/src/defaults.js` under `particles` as hex strings: `colorBase`, `colorBlue`, `colorRed`, `colorYellow`. The settings model already merges defaults with stored values, so the data flow remains: defaults -> merged settings -> renderer config. In the renderer (`packages/medusae/src/Medusae.jsx`) we will add four new uniforms (e.g. `uParticleColorBase`, `uParticleColorBlue`, etc.). In `useEffect`, we’ll convert the hex strings to `THREE.Color` and update the uniforms when settings change. The fragment shader will replace the hardcoded color literals with the uniforms, preserving the existing mixing logic. This keeps shader behavior stable while enabling user control of the palette. Values remain serializable for local storage, and the renderer remains the single place where color values become GPU-ready vectors.
+
+## UI Components and Settings Integration
+
+We will extend `src/data/settingsConfig.js` to add four `Particles` fields with `type: "color"` and labels like “Base Color”, “Blue”, “Red”, “Yellow”. `SettingsMenu.jsx` will handle `type: "color"` fields by rendering a row with a label on the left and a swatch on the right. The swatch shows the active color and acts as a trigger for a lightweight popup using the `react-popover` package. When the swatch is clicked, the popup opens a `ChromePicker` from `react-color` anchored to the swatch. The picker updates the hex string in settings on change; closing behavior is handled by the popover. This keeps the accordion layout intact (colors live inside the existing Particles section) and avoids cluttering the menu while still providing full color selection.
+
+## Error Handling and Testing
+
+We will treat hex strings as the persisted color format. If a stored value is missing or invalid, the UI will fall back to the default hex string from `settingsConfig.defaults`, ensuring the color picker always has a valid value. In `Medusae.jsx`, `THREE.Color` parsing errors will fall back to default colors for that uniform. Tests will be updated to reflect the new configuration: `src/data/settingsConfig.test.js` will assert that the particle defaults include the four color fields and that the schema includes four `type: "color"` entries. `packages/medusae/src/defaults.test.js` will assert the four new defaults exist and are strings. No new test runner is required; existing tests will be extended.
