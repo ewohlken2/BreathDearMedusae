@@ -27,6 +27,10 @@ export interface MedusaeConfig {
     rotationJitter?: number;
     cursorFollowStrength?: number;
     oscillationFactor?: number;
+    colorBase?: string;
+    colorBlue?: string;
+    colorRed?: string;
+    colorYellow?: string;
   };
 }
 

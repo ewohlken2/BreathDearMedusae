@@ -46,6 +46,18 @@ const Particles = ({ config }) => {
       uParticleRotationSpeed: { value: MEDUSAE_DEFAULTS.particles.rotationSpeed },
       uParticleRotationJitter: { value: MEDUSAE_DEFAULTS.particles.rotationJitter },
       uParticleOscillationFactor: { value: MEDUSAE_DEFAULTS.particles.oscillationFactor },
+      uParticleColorBase: {
+        value: new THREE.Color(MEDUSAE_DEFAULTS.particles.colorBase),
+      },
+      uParticleColorBlue: {
+        value: new THREE.Color(MEDUSAE_DEFAULTS.particles.colorBlue),
+      },
+      uParticleColorRed: {
+        value: new THREE.Color(MEDUSAE_DEFAULTS.particles.colorRed),
+      },
+      uParticleColorYellow: {
+        value: new THREE.Color(MEDUSAE_DEFAULTS.particles.colorYellow),
+      },
     }),
     [],
   );
@@ -74,6 +86,10 @@ const Particles = ({ config }) => {
             uniform float uParticleRotationSpeed;
             uniform float uParticleRotationJitter;
             uniform float uParticleOscillationFactor;
+            uniform vec3 uParticleColorBase;
+            uniform vec3 uParticleColorBlue;
+            uniform vec3 uParticleColorRed;
+            uniform vec3 uParticleColorYellow;
             varying vec2 vUv;
             varying float vSize;
             varying vec2 vPos;
@@ -210,10 +226,10 @@ const Particles = ({ config }) => {
                 
                 if (alpha < 0.01) discard;
 
-                vec3 black = vec3(0.08, 0.08, 0.1);
-                vec3 cBlue = vec3(0.26, 0.52, 0.96);
-                vec3 cRed = vec3(0.92, 0.26, 0.21);
-                vec3 cYellow = vec3(0.98, 0.73, 0.01);
+                vec3 black = uParticleColorBase;
+                vec3 cBlue = uParticleColorBlue;
+                vec3 cRed = uParticleColorRed;
+                vec3 cYellow = uParticleColorYellow;
                 
                 float t = uTime * 1.2;
                 
@@ -254,6 +270,12 @@ const Particles = ({ config }) => {
     material.uniforms.uParticleRotationJitter.value = merged.particles.rotationJitter;
     material.uniforms.uParticleOscillationFactor.value =
       merged.particles.oscillationFactor;
+    material.uniforms.uParticleColorBase.value.set(merged.particles.colorBase);
+    material.uniforms.uParticleColorBlue.value.set(merged.particles.colorBlue);
+    material.uniforms.uParticleColorRed.value.set(merged.particles.colorRed);
+    material.uniforms.uParticleColorYellow.value.set(
+      merged.particles.colorYellow,
+    );
   }, [material, merged]);
 
   useEffect(() => {
