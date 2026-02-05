@@ -1,0 +1,10 @@
+.medusae-root {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.medusae-canvas {
+  width: 100%;
+  height: 100%;
+}
