@@ -3,41 +3,12 @@ import { useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import "./medusae.css";
-
-const DEFAULTS = {
-  cursor: {
-    radius: 0.065,
-    strength: 2,
-    dragFactor: 0.015,
-  },
-  halo: {
-    outerOscFrequency: 2.6,
-    outerOscAmplitude: 0.76,
-    radiusBase: 2.2,
-    radiusAmplitude: 0.5,
-    shapeAmplitude: 0.75,
-    rimWidth: 1.8,
-    outerStartOffset: 0.4,
-    outerEndOffset: 2.2,
-    scaleX: 1,
-    scaleY: 1,
-  },
-  particles: {
-    baseSize: 0.012,
-    activeSize: 0.055,
-    blobScaleX: 1.0,
-    blobScaleY: 0.75,
-    rotationSpeed: 0.8,
-    rotationJitter: 0.08,
-    cursorFollowStrength: 1,
-    oscillationFactor: 1,
-  },
-};
+import MEDUSAE_DEFAULTS from "./defaults.js";
 
 const mergeConfig = (config) => ({
-  cursor: { ...DEFAULTS.cursor, ...(config?.cursor ?? {}) },
-  halo: { ...DEFAULTS.halo, ...(config?.halo ?? {}) },
-  particles: { ...DEFAULTS.particles, ...(config?.particles ?? {}) },
+  cursor: { ...MEDUSAE_DEFAULTS.cursor, ...(config?.cursor ?? {}) },
+  halo: { ...MEDUSAE_DEFAULTS.halo, ...(config?.halo ?? {}) },
+  particles: { ...MEDUSAE_DEFAULTS.particles, ...(config?.particles ?? {}) },
 });
 
 const Particles = ({ config }) => {
@@ -58,23 +29,23 @@ const Particles = ({ config }) => {
       uResolution: {
         value: new THREE.Vector2(window.innerWidth, window.innerHeight),
       },
-      uOuterOscFrequency: { value: DEFAULTS.halo.outerOscFrequency },
-      uOuterOscAmplitude: { value: DEFAULTS.halo.outerOscAmplitude },
-      uHaloRadiusBase: { value: DEFAULTS.halo.radiusBase },
-      uHaloRadiusAmplitude: { value: DEFAULTS.halo.radiusAmplitude },
-      uHaloShapeAmplitude: { value: DEFAULTS.halo.shapeAmplitude },
-      uHaloRimWidth: { value: DEFAULTS.halo.rimWidth },
-      uHaloOuterStartOffset: { value: DEFAULTS.halo.outerStartOffset },
-      uHaloOuterEndOffset: { value: DEFAULTS.halo.outerEndOffset },
-      uHaloScaleX: { value: DEFAULTS.halo.scaleX },
-      uHaloScaleY: { value: DEFAULTS.halo.scaleY },
-      uParticleBaseSize: { value: DEFAULTS.particles.baseSize },
-      uParticleActiveSize: { value: DEFAULTS.particles.activeSize },
-      uBlobScaleX: { value: DEFAULTS.particles.blobScaleX },
-      uBlobScaleY: { value: DEFAULTS.particles.blobScaleY },
-      uParticleRotationSpeed: { value: DEFAULTS.particles.rotationSpeed },
-      uParticleRotationJitter: { value: DEFAULTS.particles.rotationJitter },
-      uParticleOscillationFactor: { value: DEFAULTS.particles.oscillationFactor },
+      uOuterOscFrequency: { value: MEDUSAE_DEFAULTS.halo.outerOscFrequency },
+      uOuterOscAmplitude: { value: MEDUSAE_DEFAULTS.halo.outerOscAmplitude },
+      uHaloRadiusBase: { value: MEDUSAE_DEFAULTS.halo.radiusBase },
+      uHaloRadiusAmplitude: { value: MEDUSAE_DEFAULTS.halo.radiusAmplitude },
+      uHaloShapeAmplitude: { value: MEDUSAE_DEFAULTS.halo.shapeAmplitude },
+      uHaloRimWidth: { value: MEDUSAE_DEFAULTS.halo.rimWidth },
+      uHaloOuterStartOffset: { value: MEDUSAE_DEFAULTS.halo.outerStartOffset },
+      uHaloOuterEndOffset: { value: MEDUSAE_DEFAULTS.halo.outerEndOffset },
+      uHaloScaleX: { value: MEDUSAE_DEFAULTS.halo.scaleX },
+      uHaloScaleY: { value: MEDUSAE_DEFAULTS.halo.scaleY },
+      uParticleBaseSize: { value: MEDUSAE_DEFAULTS.particles.baseSize },
+      uParticleActiveSize: { value: MEDUSAE_DEFAULTS.particles.activeSize },
+      uBlobScaleX: { value: MEDUSAE_DEFAULTS.particles.blobScaleX },
+      uBlobScaleY: { value: MEDUSAE_DEFAULTS.particles.blobScaleY },
+      uParticleRotationSpeed: { value: MEDUSAE_DEFAULTS.particles.rotationSpeed },
+      uParticleRotationJitter: { value: MEDUSAE_DEFAULTS.particles.rotationJitter },
+      uParticleOscillationFactor: { value: MEDUSAE_DEFAULTS.particles.oscillationFactor },
     }),
     [],
   );
