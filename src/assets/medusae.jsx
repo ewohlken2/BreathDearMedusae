@@ -3,24 +3,31 @@ import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 const Particles = () => {
-    const meshRef = useRef();
-    const { viewport } = useThree();
+  const meshRef = useRef();
+  const { viewport } = useThree();
 
-    // User: "Add a bit more particles"
-    const countX = 100;
-    const countY = 55;
-    const count = countX * countY;
+  // User: "Add a bit more particles"
+  const countX = 100;
+  const countY = 55;
+  const count = countX * countY;
 
-    // Use a Plane for the pill shape. We will stretch it in the shader.
-    const geometry = useMemo(() => new THREE.PlaneGeometry(1, 1), []);
+  // Use a Plane for the pill shape. We will stretch it in the shader.
+  const geometry = useMemo(() => new THREE.PlaneGeometry(1, 1), []);
 
-    const uniforms = useMemo(() => ({
-        uTime: { value: 0 },
-        uMouse: { value: new THREE.Vector2(0, 0) },
-        uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
-    }), []);
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uMouse: { value: new THREE.Vector2(0, 0) },
+      uResolution: {
+        value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+      },
+    }),
+    [],
+  );
 
-    const material = useMemo(() => new THREE.ShaderMaterial({
+  const material = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
         uniforms: uniforms,
         vertexShader: `
             uniform float uTime;
@@ -86,16 +93,26 @@ const Particles = () => {
                 // Very slow evolution of the noise (uTime * 0.1) to avoid "jumpy"
                 float shapeFactor = noise(vec2(angleToMouse * 2.0, uTime * 0.1));
                 
+                // Tunables
+                float radiusBase = 2.2;
+                float radiusAmplitude = 0.3;
+                float shapeAmplitude = 0.5;
+                float rimWidth = 1.8;
+                float outerStartOffset = 0.2;
+                float outerEndOffset = 2.2;
+                float outerOscFrequency = 1.0;
+                float outerOscAmplitude = 0.56;
+
                 // The "Breathing" is now a slow expansion/contraction of the Halo Radius
                 // nice and easy...
                 float breathCycle = sin(uTime * 0.8); // Smooth -1 to 1
                 
-                // Radius breathes: 2.2 +/- 0.3
-                float currentRadius = 2.2 + breathCycle * 0.3 + (shapeFactor * 0.5);
+                // Radius breathes: base +/- amplitude
+                float baseRadius = radiusBase + breathCycle * radiusAmplitude;
+                float currentRadius = baseRadius + (shapeFactor * shapeAmplitude);
                 
                 // Interaction Ring Calculation
                 float dist = distFromMouse; 
-                float rimWidth = 1.8; // Soft edge
                 float rimInfluence = smoothstep(rimWidth, 0.0, abs(dist - currentRadius));
                 
                 // --- 3. WAVE MOVEMENT (Gentle Ripple) ---
@@ -113,6 +130,12 @@ const Particles = () => {
                 
                 // 3D: Subtle Z float
                 pos.z += rimInfluence * 0.3 * sin(uTime);
+
+                // --- 3.5 OUTER OSCILLATION (Smooth, Faster) ---
+                // Faster motion outside the halo, but eased in smoothly.
+                float outerInfluence = smoothstep(baseRadius + outerStartOffset, baseRadius + outerEndOffset, dist);
+                float outerOsc = sin(uTime * outerOscFrequency + pos.x * 0.6 + pos.y * 0.6);
+                pos.xy += normalize(relToMouse + vec2(0.0001, 0.0)) * outerOsc * outerOscAmplitude * outerInfluence;
 
                 // --- 4. SIZE & SCALE ---
                 
@@ -140,14 +163,15 @@ const Particles = () => {
 
                 // User: "Must be directed towards mouse" (Radial)
                 
-                // atan(y, x) gives angle of vector FROM mouse TO particle.
-                // Aligning with this makes them point radially (like rays/spokes).
-                float targetAngle = angleToMouse; 
-                
-                // Apply rotation everywhere based on mouse field
-                float finalAngle = targetAngle; 
-                
-                transformed.xy = rotate2d(finalAngle) * transformed.xy;
+                // Align with direction vector directly to avoid atan wrap jumps.
+                vec2 dir = normalize(relToMouse + vec2(0.0001, 0.0));
+                float jitter = sin(uTime * 1.8 + pos.x * 0.35 + pos.y * 0.35) * 0.68;
+                float cj = cos(jitter);
+                float sj = sin(jitter);
+                mat2 rotJitter = mat2(cj, -sj, sj, cj);
+                vec2 jitteredDir = normalize(rotJitter * dir);
+                mat2 rot = mat2(jitteredDir.x, jitteredDir.y, -jitteredDir.y, jitteredDir.x);
+                transformed.xy = rot * transformed.xy;
                 
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(pos + transformed, 1.0);
             }
@@ -194,100 +218,107 @@ const Particles = () => {
         `,
         transparent: true,
         depthWrite: false,
-    }), [uniforms]);
+      }),
+    [uniforms],
+  );
 
-    useEffect(() => {
-        if (!meshRef.current) return;
+  useEffect(() => {
+    if (!meshRef.current) return;
 
-        // Populate attributes
-        const offsets = new Float32Array(count * 3);
-        const randoms = new Float32Array(count);
-        const angles = new Float32Array(count); // Random initial angles
+    // Populate attributes
+    const offsets = new Float32Array(count * 3);
+    const randoms = new Float32Array(count);
+    const angles = new Float32Array(count); // Random initial angles
 
-        // Spread them out more since we reduced count
-        const gridWidth = 40;
-        const gridHeight = 22;
-        const jitter = 0.25; // Subtle jitter - more grid-like but still organic
+    // Spread them out more since we reduced count
+    const gridWidth = 40;
+    const gridHeight = 22;
+    const jitter = 0.25; // Subtle jitter - more grid-like but still organic
 
-        let i = 0;
-        for (let y = 0; y < countY; y++) {
-            for (let x = 0; x < countX; x++) {
-                // Normalized grid coords 0..1
-                const u = x / (countX - 1);
-                const v = y / (countY - 1);
+    let i = 0;
+    for (let y = 0; y < countY; y++) {
+      for (let x = 0; x < countX; x++) {
+        // Normalized grid coords 0..1
+        const u = x / (countX - 1);
+        const v = y / (countY - 1);
 
-                // Base grid position centered
-                let px = (u - 0.5) * gridWidth;
-                let py = (v - 0.5) * gridHeight;
+        // Base grid position centered
+        let px = (u - 0.5) * gridWidth;
+        let py = (v - 0.5) * gridHeight;
 
-                // Add NOISE to the grid
-                px += (Math.random() - 0.5) * jitter;
-                py += (Math.random() - 0.5) * jitter;
+        // Add NOISE to the grid
+        px += (Math.random() - 0.5) * jitter;
+        py += (Math.random() - 0.5) * jitter;
 
-                offsets[i * 3] = px;
-                offsets[i * 3 + 1] = py;
-                offsets[i * 3 + 2] = 0;
+        offsets[i * 3] = px;
+        offsets[i * 3 + 1] = py;
+        offsets[i * 3 + 2] = 0;
 
-                randoms[i] = Math.random();
-                angles[i] = Math.random() * Math.PI * 2;
-                i++;
-            }
-        }
+        randoms[i] = Math.random();
+        angles[i] = Math.random() * Math.PI * 2;
+        i++;
+      }
+    }
 
-        meshRef.current.geometry.setAttribute('aOffset', new THREE.InstancedBufferAttribute(offsets, 3));
-        meshRef.current.geometry.setAttribute('aRandom', new THREE.InstancedBufferAttribute(randoms, 1));
-        meshRef.current.geometry.setAttribute('aAngleOffset', new THREE.InstancedBufferAttribute(angles, 1));
-
-    }, [count, countX, countY]);
-
-    // Track if mouse is on screen
-    const hovering = useRef(true);
-
-    useEffect(() => {
-        const handleLeave = () => (hovering.current = false);
-        const handleEnter = () => (hovering.current = true);
-
-        document.body.addEventListener("mouseleave", handleLeave);
-        document.body.addEventListener("mouseenter", handleEnter);
-
-        return () => {
-            document.body.removeEventListener("mouseleave", handleLeave);
-            document.body.removeEventListener("mouseenter", handleEnter);
-        };
-    }, []);
-
-    useFrame((state) => {
-        const { clock, pointer } = state;
-        material.uniforms.uTime.value = clock.getElapsedTime();
-
-        // Determine Target
-        let targetX = 0;
-        let targetY = 0;
-
-        // Only follow pointer if mouse is on screen
-        if (hovering.current) {
-            targetX = (pointer.x * viewport.width) / 2;
-            targetY = (pointer.y * viewport.height) / 2;
-        }
-
-        // Current: Center of Gravity
-        const current = material.uniforms.uMouse.value;
-
-        // "Heavy" Drag: Reduced to 0.015 for more weight
-        const dragFactor = 0.055;
-
-        // If it's the very first frame or mouse just entered, we might want to snap
-        // but for now, initializing to 0,0 already makes it appear instantly at center.
-        current.x += (targetX - current.x) * dragFactor;
-        current.y += (targetY - current.y) * dragFactor;
-    });
-
-    return (
-        <instancedMesh
-            ref={meshRef}
-            args={[geometry, material, count]}
-        />
+    meshRef.current.geometry.setAttribute(
+      "aOffset",
+      new THREE.InstancedBufferAttribute(offsets, 3),
     );
+    meshRef.current.geometry.setAttribute(
+      "aRandom",
+      new THREE.InstancedBufferAttribute(randoms, 1),
+    );
+    meshRef.current.geometry.setAttribute(
+      "aAngleOffset",
+      new THREE.InstancedBufferAttribute(angles, 1),
+    );
+  }, [count, countX, countY]);
+
+  // Track if mouse is on screen
+  const hovering = useRef(true);
+
+  useEffect(() => {
+    const handleLeave = () => (hovering.current = false);
+    const handleEnter = () => (hovering.current = true);
+
+    document.body.addEventListener("mouseleave", handleLeave);
+    document.body.addEventListener("mouseenter", handleEnter);
+
+    return () => {
+      document.body.removeEventListener("mouseleave", handleLeave);
+      document.body.removeEventListener("mouseenter", handleEnter);
+    };
+  }, []);
+
+  useFrame((state) => {
+    const { clock, pointer } = state;
+    material.uniforms.uTime.value = clock.getElapsedTime();
+
+    // Determine Target
+    let targetX = null;
+    let targetY = null;
+
+    // Only follow pointer if mouse is on screen
+    if (hovering.current) {
+      targetX = (pointer.x * viewport.width) / 2;
+      targetY = (pointer.y * viewport.height) / 2;
+    }
+
+    // Current: Center of Gravity
+    const current = material.uniforms.uMouse.value;
+
+    // "Heavy" Drag: Reduced to 0.015 for more weight
+    const dragFactor = 0.055;
+
+    // If it's the very first frame or mouse just entered, we might want to snap
+    // but for now, initializing to 0,0 already makes it appear instantly at center.
+    if (targetX !== null && targetY !== null) {
+      current.x += (targetX - current.x) * dragFactor;
+      current.y += (targetY - current.y) * dragFactor;
+    }
+  });
+
+  return <instancedMesh ref={meshRef} args={[geometry, material, count]} />;
 };
 
 export default Particles;
