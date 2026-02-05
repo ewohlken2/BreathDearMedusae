@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import process from "node:process";
 import MEDUSAE_DEFAULTS from "./defaults.js";
 
 test("medusae defaults still load", () => {
