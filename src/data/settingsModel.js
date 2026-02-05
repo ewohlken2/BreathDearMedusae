@@ -6,7 +6,10 @@ const deepMerge = (defaults, overrides = {}) => {
     const value = defaults[key];
     if (value && typeof value === "object" && !Array.isArray(value)) {
       result[key] = deepMerge(value, overrides[key]);
-    } else if (typeof overrides?.[key] === "number") {
+    } else if (
+      typeof overrides?.[key] === "number" ||
+      typeof overrides?.[key] === "string"
+    ) {
       result[key] = overrides[key];
     }
   });
@@ -22,7 +25,11 @@ export const exportSettingsText = (settings) => {
   sections.forEach((section) => {
     lines.push(`  ${section}: {`);
     Object.entries(settings[section]).forEach(([key, value]) => {
-      lines.push(`    ${key}: ${value},`);
+      if (typeof value === "string") {
+        lines.push(`    ${key}: "${value}",`);
+      } else {
+        lines.push(`    ${key}: ${value},`);
+      }
     });
     lines.push("  },");
   });
