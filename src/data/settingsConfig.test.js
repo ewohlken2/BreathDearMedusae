@@ -37,3 +37,15 @@ test("particle defaults include color palette and schema fields", () => {
   );
   assert.equal(colorFields.length, 4);
 });
+
+test("background defaults include color and schema field", () => {
+  const background = SETTINGS_CONFIG.defaults.background;
+  assert.equal(typeof background.color, "string");
+
+  const backgroundSection = SETTINGS_CONFIG.settingsSchema.find(
+    (section) => section.id === "background",
+  );
+  assert.ok(backgroundSection);
+  assert.equal(backgroundSection.fields.length, 1);
+  assert.equal(backgroundSection.fields[0].type, "color");
+});

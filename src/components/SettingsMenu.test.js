@@ -5,8 +5,8 @@ import path from "node:path";
 import process from "node:process";
 import SETTINGS_CONFIG from "../data/settingsConfig.js";
 
-test("settings schema has 3 sections", () => {
-  assert.equal(SETTINGS_CONFIG.settingsSchema.length, 3);
+test("settings schema has 4 sections", () => {
+  assert.equal(SETTINGS_CONFIG.settingsSchema.length, 4);
 });
 
 test("settings menu includes color picker support", () => {
