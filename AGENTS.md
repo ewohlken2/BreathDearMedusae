@@ -35,6 +35,10 @@ Use PNPM for all commands:
 - Vite handles dev/build workflows.
 - Rendering is driven by Three.js + React Three Fiber; keep shader/scene logic under `src/assets/`.
 
+## Findings
+- The active Medusae renderer used by the app lives in `packages/medusae/src/Medusae.jsx` (imported in `src/App.jsx`), not `src/assets/`.
+- Scene controls and defaults live in `src/data/settingsConfig.js` and are surfaced in `src/components/SettingsMenu.jsx`.
+
 ## Simplification Notes
 - Settings UI is schema-driven via `src/data/settingsConfig.js` (`settingsSchema`).
 - Shared defaults live in `packages/medusae/src/defaults.js` and are consumed by both app and renderer.
